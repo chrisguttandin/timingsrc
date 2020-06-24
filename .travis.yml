@@ -1,0 +1,21 @@
+before_install: npm install npm@latest --global
+cache:
+  directories:
+    - $HOME/.npm
+dist: xenial
+env:
+  global:
+    - secure: Jm7lkMc1VTtpxydT9zr782l5Ts1muszlmEKZbxPTXMRaFQNMcVSz6CvrkBx9EQx3+LtkP1S0eN5t//GXXyMb3Y8Ep43qamolkc7r7RJ30VNDXi+K3Uq12o/XT/XnOyfhgQoOyLZbzLSMrTqa9N4h2MJ2up/XBOPZshutjEnw1ZfGtE4G4Xi5HiCNHy+VazIMTUAG/pTAtwAiJCnrWnUQUq2m6EAZIKCqgLSXSsGRoM0IfCB8kP9w+SG/tdten03dcd/1XypSuwloKmqTZbjVen/khPMHubPq7KZSzNKPj3OeZWJZbV8Jo+ZN1AawB8mjOQdn8nCyig+F6YztQKyBdmf3t39tWkpuZp3c3n+Lw7os2v6j2QVRIbsSFy4ax2vj7xT8nH85Enf9CtyqcW4/F7wWUBqEklkvfw7mTWbBrQeStZoS/ZAeR0IEWxOXbmdHHl+S/zGgMS+i7v3s4d2yZaAFyLOjabjEbdRwYIsYvLoDOGjtmgYqtzBLm5EEsCRvGn6aJnBeQBYYvcwj5DxO9kniAsIBJbr94OmnUEGoUc1j9h1pAdwMpd8T354c2gIyJviB6RPquPIwESM+tlDUTjunZv+2uLru4H2s+mMnix5fCCk+sNApQtYyvHHA+JWvWxLebN7HOrVbQHKQYcTqDWKe3xQGOqRfawTOPfXC5+s=
+    - secure: kDfGqV+a65azKogr31cyNsk9K+aEvfLwjZBv6l1JPETsyvnZuEtOtlLlKGsiwNMgBpC+nMFxPuwaIHpCBjVIjK3eFKRn1d9JlZoqO2YOQcM29nGWJmMDz04Vdmzuhz/usMVCBIXjYkRMgkpH8mM7UvXWPFjkjJkMzNaA4Pnk4DEDAutKdZNoyw6ZRCs1OTwcJ+U6HX+z85OpvX7zw4nehON2IgCTyzDa9tshiMxUoNT5p03llHUTjkDAMU/e1O/2Rs8//dQn/3lQKlvgp+f9PDBgPNR9UuA40p6OX/r/hXs5VtsM2HR0Z1GHu1GOZcVDR2ui0jyP385xUp9PH+TS171t1v2yxIRXkJcp9uIjjiQCDCjG7cnWAnV+SfaZ5I3eCmUq9HPuAaDQBjxcPqTAwzWcDm8MhqH4TMYAftcQf8PC/E5GV27FETRoqKZC2cmd7qXebEhUWRfVDWhdi8nVtgV8QV+uYobRtzEZq2B6Xp6TySMDOMb7RZbnOyDQKNPkzaW8JSfxtEJXM4q11nw/3i4XvqUpdc+PH+8txcxK6wVE4/6wzCdZxrgZ67fb8A2aadmH5nXZYj0b44JTJlnDJYviuFPr1u/byXmSdmdKUCI1XYrQ32mdsgMHFGeOxzTZ4SNU01l8Gv2pBYQ+V/28GH1944FYJJrMBIOAo4Foexw=
+install: npm ci || (rm -rf node_modules && npm install)
+language: node_js
+matrix:
+  include:
+    - env: [TARGET=chrome, TYPE=integration]
+      node_js: 12
+    - env: [TARGET=chrome, TYPE=unit]
+      node_js: 12
+    - env: [TARGET=firefox, TYPE=integration]
+      node_js: 12
+    - env: [TARGET=firefox, TYPE=unit]
+      node_js: 12
