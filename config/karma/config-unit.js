@@ -28,7 +28,7 @@ module.exports = (config) => {
             plugins: [
                 new DefinePlugin({
                     'process.env': {
-                        TRAVIS: JSON.stringify(env.TRAVIS)
+                        CI: JSON.stringify(env.CI)
                     }
                 })
             ],
@@ -42,11 +42,11 @@ module.exports = (config) => {
         }
     });
 
-    if (env.TRAVIS) {
+    if (env.CI) {
         config.set({
             browserStack: {
                 accessKey: env.BROWSER_STACK_ACCESS_KEY,
-                build: `${env.TRAVIS_REPO_SLUG}/${env.TRAVIS_JOB_NUMBER}/unit-${env.TARGET}`,
+                build: `${env.GITHUB_REPOSITORY}/${env.GITHUB_RUN_ID}/unit-${env.TARGET}`,
                 username: env.BROWSER_STACK_USERNAME,
                 video: false
             },

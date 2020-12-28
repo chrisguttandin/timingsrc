@@ -36,11 +36,11 @@ module.exports = (config) => {
         }
     });
 
-    if (env.TRAVIS) {
+    if (env.CI) {
         config.set({
             browserStack: {
                 accessKey: env.BROWSER_STACK_ACCESS_KEY,
-                build: `${env.TRAVIS_REPO_SLUG}/${env.TRAVIS_JOB_NUMBER}/integration-${env.TARGET}`,
+                build: `${env.GITHUB_REPOSITORY}/${env.GITHUB_RUN_ID}/integration-${env.TARGET}`,
                 username: env.BROWSER_STACK_USERNAME,
                 video: false
             },
