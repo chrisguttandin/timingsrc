@@ -6,7 +6,15 @@ module.exports = (config) => {
 
         concurrency: 1,
 
-        files: ['../../test/integration/**/*.js'],
+        files: [
+            {
+                included: false,
+                pattern: '../../src/**',
+                served: false,
+                watched: true
+            },
+            '../../test/integration/**/*.js'
+        ],
 
         frameworks: ['mocha', 'sinon-chai'],
 
@@ -40,7 +48,10 @@ module.exports = (config) => {
         config.set({
             browserStack: {
                 accessKey: env.BROWSER_STACK_ACCESS_KEY,
-                build: `${env.GITHUB_REPOSITORY}/${env.GITHUB_RUN_ID}/integration-${env.TARGET}`,
+                build: `${env.GITHUB_RUN_ID}/integration-${env.TARGET}`,
+                forceLocal: true,
+                localIdentifier: `${Math.floor(Math.random() * 1000000)}`,
+                project: env.GITHUB_REPOSITORY,
                 username: env.BROWSER_STACK_USERNAME,
                 video: false
             },
@@ -50,28 +61,39 @@ module.exports = (config) => {
                     ? ['ChromeBrowserStack']
                     : env.TARGET === 'firefox'
                     ? ['FirefoxBrowserStack']
-                    : ['ChromeBrowserStack', 'FirefoxBrowserStack'],
+                    : env.TARGET === 'safari'
+                    ? ['SafariBrowserStack']
+                    : ['ChromeBrowserStack', 'FirefoxBrowserStack', 'SafariBrowserStack'],
 
-            captureTimeout: 120000,
+            captureTimeout: 300000,
 
             customLaunchers: {
                 ChromeBrowserStack: {
                     base: 'BrowserStack',
                     browser: 'chrome',
+                    captureTimeout: 300,
                     os: 'OS X',
                     os_version: 'Mojave' // eslint-disable-line camelcase
                 },
                 FirefoxBrowserStack: {
                     base: 'BrowserStack',
                     browser: 'firefox',
+                    captureTimeout: 300,
                     os: 'Windows',
                     os_version: '10' // eslint-disable-line camelcase
+                },
+                SafariBrowserStack: {
+                    base: 'BrowserStack',
+                    browser: 'safari',
+                    captureTimeout: 300,
+                    os: 'OS X',
+                    os_version: 'High Sierra' // eslint-disable-line camelcase
                 }
             }
         });
     } else {
         config.set({
-            browsers: ['ChromeCanaryHeadless', 'ChromeHeadless', 'FirefoxDeveloperHeadless', 'FirefoxHeadless']
+            browsers: ['ChromeCanaryHeadless', 'ChromeHeadless', 'FirefoxDeveloperHeadless', 'FirefoxHeadless', 'Safari']
         });
     }
 };
