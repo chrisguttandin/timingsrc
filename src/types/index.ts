@@ -7,6 +7,7 @@ export * from './set-timingsrc-with-custom-update-function-factory';
 export * from './set-timingsrc-with-custom-update-function-function';
 export * from './update-function';
 export * from './update-gradually-factory';
+export * from './update-media-element-factory';
 export * from './update-stepwise-factory';
 export * from './update-stepwise-factory-factory';
 export * from './window-factory';

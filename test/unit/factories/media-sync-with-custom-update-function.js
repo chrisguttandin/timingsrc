@@ -4,27 +4,25 @@ import { createSetTimingsrcWithCustomUpdateFunction } from '../../../src/factori
 describe('setTimingsrcWithCustomUpdateFunction()', () => {
     let animationFrame;
     let mediaElement;
-    let pause;
-    let play;
     let prepareTimingStateVector;
     let setTimingsrcWithCustomUpdateFunction;
     let subscribe;
     let timingObject;
     let updateFunction;
+    let updateMediaElement;
 
     beforeEach(() => {
         animationFrame = stub();
         mediaElement = 'a fake MediaElement';
-        pause = spy();
-        play = spy();
         prepareTimingStateVector = 'a fake prepareTimingStateVector() function';
         subscribe = stub();
         timingObject = 'a fake TimingObject';
         updateFunction = spy();
+        updateMediaElement = spy();
 
         animationFrame.returns(subscribe);
 
-        setTimingsrcWithCustomUpdateFunction = createSetTimingsrcWithCustomUpdateFunction(animationFrame, pause, play);
+        setTimingsrcWithCustomUpdateFunction = createSetTimingsrcWithCustomUpdateFunction(animationFrame, updateMediaElement);
     });
 
     it('should call animationFrame without any arguments', () => {
