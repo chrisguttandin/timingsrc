@@ -37,4 +37,12 @@ const deleteTimingsrc = setTimingsrc(mediaElement, timingObject);
 deleteTimingsrc();
 ```
 
+It is also possible to configure a custom version of the `setTimingsrc()` function. The following would build a `setTimingSrc()` function which does not include the fallback for stepwise updates which is necessary in Safari.
+
+```js
+import { createSetTimingsrc, createUpdateGradually, setTimingsrcWithCustomUpdateFunction } from 'timingsrc';
+
+const customSetTimingsrc = createSetTimingsrc(setTimingsrcWithCustomUpdateFunction, createUpdateGradually(0.5, 1, 0.025));
+```
+
 Please take a look at the [video-synchronization-demo](https://github.com/chrisguttandin/video-synchronization-demo) for a more comprehensive example.

@@ -1,47 +1,31 @@
-import { spy, stub } from 'sinon';
 import { createSetTimingsrc } from '../../../src/factories/set-timingsrc';
+import { stub } from 'sinon';
 
 describe('setTimingsrc()', () => {
-    let createUpdateGradually;
-    let createUpdateStepwise;
     let mediaElement;
-    let prepareTimingStateVector;
     let setTimingsrc;
     let setTimingsrcWithCustomUpdateFunction;
+    let subscription;
     let timingObject;
-    let updateGradually;
-    let updateStepwise;
-    let window;
+    let update;
 
     beforeEach(() => {
-        createUpdateGradually = stub();
-        createUpdateStepwise = stub();
         mediaElement = 'a fake MediaElement';
-        prepareTimingStateVector = 'a fake prepareTimingStateVector() function';
-        setTimingsrcWithCustomUpdateFunction = spy();
+        setTimingsrcWithCustomUpdateFunction = stub();
+        subscription = 'a fake subscription';
         timingObject = 'a fake TimingObject';
-        updateGradually = 'a fake updateGradually() function';
-        updateStepwise = 'a fake updateStepwise() function';
-        window = {};
+        update = 'a fake update() function';
 
-        createUpdateGradually.returns(updateGradually);
-        createUpdateStepwise.returns(updateStepwise);
+        setTimingsrc = createSetTimingsrc(setTimingsrcWithCustomUpdateFunction, update);
 
-        setTimingsrc = createSetTimingsrc(createUpdateGradually, createUpdateStepwise, setTimingsrcWithCustomUpdateFunction, window);
+        setTimingsrcWithCustomUpdateFunction.returns(subscription);
     });
 
-    describe('with the user agent string of Chrome', () => {
+    describe('with a provided prepareTimingStateVector function', () => {
+        let prepareTimingStateVector;
+
         beforeEach(() => {
-            window.navigator = {
-                userAgent:
-                    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36'
-            };
-        });
-
-        it('should call createUpdateGradually with the default arguments', () => {
-            setTimingsrc(mediaElement, timingObject, prepareTimingStateVector);
-
-            expect(createUpdateGradually).to.have.been.calledOnce.and.calledWithExactly(0.5, 1, 0.025);
+            prepareTimingStateVector = 'a fake prepareTimingStateVector() function';
         });
 
         it('should call setTimingsrcWithCustomUpdateFunction internally with the function that applies gradual updates', () => {
@@ -50,58 +34,30 @@ describe('setTimingsrc()', () => {
             expect(setTimingsrcWithCustomUpdateFunction).to.have.been.calledOnce.and.calledWithExactly(
                 mediaElement,
                 timingObject,
-                updateGradually,
+                update,
                 prepareTimingStateVector
             );
         });
+
+        it('should return the value returned by setTimingsrcWithCustomUpdateFunction', () => {
+            expect(setTimingsrc(mediaElement, timingObject, prepareTimingStateVector)).to.equal(subscription);
+        });
     });
 
-    describe('with the user agent string of Firefox', () => {
-        beforeEach(() => {
-            window.navigator = { userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:77.0) Gecko/20100101 Firefox/77.0' };
-        });
-
-        it('should call createUpdateGradually with the default arguments', () => {
-            setTimingsrc(mediaElement, timingObject, prepareTimingStateVector);
-
-            expect(createUpdateGradually).to.have.been.calledOnce.and.calledWithExactly(0.5, 1, 0.025);
-        });
-
+    describe('without a provided prepareTimingStateVector function', () => {
         it('should call setTimingsrcWithCustomUpdateFunction internally with the function that applies gradual updates', () => {
-            setTimingsrc(mediaElement, timingObject, prepareTimingStateVector);
+            setTimingsrc(mediaElement, timingObject);
 
             expect(setTimingsrcWithCustomUpdateFunction).to.have.been.calledOnce.and.calledWithExactly(
                 mediaElement,
                 timingObject,
-                updateGradually,
-                prepareTimingStateVector
+                update,
+                null
             );
         });
-    });
 
-    describe('with the user agent string of Safari', () => {
-        beforeEach(() => {
-            window.navigator = {
-                userAgent:
-                    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.1.1 Safari/605.1.15'
-            };
-        });
-
-        it('should call createUpdateStepwise with the default arguments', () => {
-            setTimingsrc(mediaElement, timingObject, prepareTimingStateVector);
-
-            expect(createUpdateStepwise).to.have.been.calledOnce.and.calledWithExactly(0.025);
-        });
-
-        it('should call setTimingsrcWithCustomUpdateFunction internally with the function that applies stepwise updates', () => {
-            setTimingsrc(mediaElement, timingObject, prepareTimingStateVector);
-
-            expect(setTimingsrcWithCustomUpdateFunction).to.have.been.calledOnce.and.calledWithExactly(
-                mediaElement,
-                timingObject,
-                updateStepwise,
-                prepareTimingStateVector
-            );
+        it('should return the value returned by setTimingsrcWithCustomUpdateFunction', () => {
+            expect(setTimingsrc(mediaElement, timingObject)).to.equal(subscription);
         });
     });
 });

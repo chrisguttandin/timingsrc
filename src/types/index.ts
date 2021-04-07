@@ -1,3 +1,4 @@
+export * from './default-timingsrc-factory';
 export * from './pause-function';
 export * from './play-function';
 export * from './prepare-timing-state-vector-function';
