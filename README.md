@@ -2,7 +2,6 @@
 
 **A library to synchronize a MediaElement with a TimingObject.**
 
-[![tests](https://img.shields.io/travis/chrisguttandin/timingsrc/master.svg?style=flat-square)](https://travis-ci.org/chrisguttandin/timingsrc)
 [![dependencies](https://img.shields.io/david/chrisguttandin/timingsrc.svg?style=flat-square)](https://www.npmjs.com/package/timingsrc)
 [![version](https://img.shields.io/npm/v/timingsrc.svg?style=flat-square)](https://www.npmjs.com/package/timingsrc)
 
