@@ -1,21 +1,22 @@
 import { TUpdateGraduallyFactory } from '../types';
 
 export const createUpdateGradually: TUpdateGraduallyFactory = (timeConstant, threshold, tolerance) => {
-    return (timingStateVector, currentTime) => {
-        if (timingStateVector.position < 0 || timingStateVector.velocity === 0) {
-            return { position: timingStateVector.position, velocity: timingStateVector.velocity };
+    return ({ position, velocity }, currentTime) => {
+        if (position < 0 || velocity === 0) {
+            return { position, velocity };
         }
 
-        const positionDifference = Math.abs(currentTime - timingStateVector.position);
+        const positionDifference = currentTime - position;
+        const absolutePositionDifference = Math.abs(positionDifference);
 
-        if (positionDifference > threshold) {
-            return { position: timingStateVector.position, velocity: timingStateVector.velocity };
+        if (absolutePositionDifference > threshold) {
+            return { position, velocity };
         }
 
-        if (positionDifference > tolerance) {
-            return { position: currentTime, velocity: ((positionDifference + timeConstant) / timeConstant) * timingStateVector.velocity };
+        if (absolutePositionDifference > tolerance) {
+            return { position: currentTime, velocity: ((positionDifference + timeConstant) / timeConstant) * velocity };
         }
 
-        return { position: currentTime, velocity: timingStateVector.velocity };
+        return { position: currentTime, velocity };
     };
 };
