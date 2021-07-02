@@ -133,7 +133,7 @@ describe('updateGradually()', () => {
             });
 
             it('should return an updated position and velocity', () => {
-                expect(updateGradually(timingStateVector, 5)).to.deep.equal({ position: 5, velocity: 5 });
+                expect(updateGradually(timingStateVector, 5)).to.deep.equal({ position: 5, velocity: -3 });
             });
         });
 
@@ -157,7 +157,7 @@ describe('updateGradually()', () => {
             });
 
             it('should return an updated position and velocity', () => {
-                expect(updateGradually(timingStateVector, 5)).to.deep.equal({ position: 5, velocity: -3 });
+                expect(updateGradually(timingStateVector, 5)).to.deep.equal({ position: 5, velocity: 5 });
             });
         });
 

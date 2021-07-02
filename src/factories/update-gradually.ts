@@ -14,7 +14,7 @@ export const createUpdateGradually: TUpdateGraduallyFactory = (timeConstant, thr
         }
 
         if (absolutePositionDifference > tolerance) {
-            return { position: currentTime, velocity: ((positionDifference + timeConstant) / timeConstant) * velocity };
+            return { position: currentTime, velocity: ((timeConstant - positionDifference) / timeConstant) * velocity };
         }
 
         return { position: currentTime, velocity };
