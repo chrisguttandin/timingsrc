@@ -1,25 +1,25 @@
 import { TUpdateMediaElementFactory } from '../types';
 
-export const createUpdateMediaElement: TUpdateMediaElementFactory = (pause, play) => {
+export const createUpdateMediaElement: TUpdateMediaElementFactory = (pause, play, setCurrentTime, setPlaybackRate) => {
     return (currentTime, duration, mediaElement, playbackRate, position, velocity) => {
         if (position < 0) {
             if (currentTime > 0) {
-                mediaElement.currentTime = 0;
+                setCurrentTime(mediaElement, currentTime, 0);
             }
 
             pause(mediaElement);
         } else if (position >= duration) {
             if (currentTime !== duration) {
-                mediaElement.currentTime = duration;
+                setCurrentTime(mediaElement, currentTime, duration);
             }
 
             pause(mediaElement);
         } else if (currentTime !== position) {
-            mediaElement.currentTime = position;
+            setCurrentTime(mediaElement, currentTime, position);
 
             if (velocity !== 0) {
                 if (playbackRate !== velocity) {
-                    mediaElement.playbackRate = velocity;
+                    setPlaybackRate(mediaElement, playbackRate, velocity);
                 }
 
                 play(mediaElement);
@@ -28,8 +28,7 @@ export const createUpdateMediaElement: TUpdateMediaElementFactory = (pause, play
             }
         } else if (playbackRate !== velocity) {
             if (velocity !== 0) {
-                mediaElement.playbackRate = velocity;
-
+                setPlaybackRate(mediaElement, playbackRate, velocity);
                 play(mediaElement);
             } else {
                 pause(mediaElement);

@@ -1,5 +1,5 @@
-import { spy, stub } from 'sinon';
 import { createUpdateMediaElement } from '../../../src/factories/update-media-element';
+import { spy } from 'sinon';
 
 describe('updateMediaElement()', () => {
     let currentTime;
@@ -15,29 +15,15 @@ describe('updateMediaElement()', () => {
     beforeEach(() => {
         pause = spy();
         play = spy();
+        setCurrentTime = spy();
+        setPlaybackRate = spy();
 
-        updateMediaElement = createUpdateMediaElement(pause, play);
+        updateMediaElement = createUpdateMediaElement(pause, play, setCurrentTime, setPlaybackRate);
 
         currentTime = 10;
         duration = 20;
-        mediaElement = {};
+        mediaElement = 'a fake MediaElement';
         playbackRate = 1;
-        setCurrentTime = stub();
-        setPlaybackRate = stub();
-
-        Object.defineProperties(mediaElement, {
-            currentTime: {
-                get: () => currentTime,
-                set: setCurrentTime
-            },
-            playbackRate: {
-                get: () => playbackRate,
-                set: setPlaybackRate
-            }
-        });
-
-        setCurrentTime.callsFake((value) => (currentTime = value));
-        setPlaybackRate.callsFake((value) => (playbackRate = value));
     });
 
     describe('with an unchanged and valid position', () => {
@@ -57,14 +43,12 @@ describe('updateMediaElement()', () => {
             it('should not set the currentTime', () => {
                 updateMediaElement(currentTime, duration, mediaElement, playbackRate, position, velocity);
 
-                expect(mediaElement.currentTime).to.equal(currentTime);
                 expect(setCurrentTime).to.have.not.been.called;
             });
 
             it('should not set the playbackRate', () => {
                 updateMediaElement(currentTime, duration, mediaElement, playbackRate, position, velocity);
 
-                expect(mediaElement.playbackRate).to.equal(playbackRate);
                 expect(setPlaybackRate).to.have.not.been.called;
             });
 
@@ -91,15 +75,13 @@ describe('updateMediaElement()', () => {
             it('should not set the currentTime', () => {
                 updateMediaElement(currentTime, duration, mediaElement, playbackRate, position, velocity);
 
-                expect(mediaElement.currentTime).to.equal(currentTime);
                 expect(setCurrentTime).to.have.not.been.called;
             });
 
             it('should set the playbackRate', () => {
                 updateMediaElement(currentTime, duration, mediaElement, playbackRate, position, velocity);
 
-                expect(mediaElement.playbackRate).to.equal(velocity);
-                expect(setPlaybackRate).to.have.been.calledOnce.and.calledWithExactly(velocity);
+                expect(setPlaybackRate).to.have.been.calledOnce.and.calledWithExactly(mediaElement, playbackRate, velocity);
             });
 
             it('should not call pause()', () => {
@@ -125,14 +107,12 @@ describe('updateMediaElement()', () => {
             it('should not set the currentTime', () => {
                 updateMediaElement(currentTime, duration, mediaElement, playbackRate, position, velocity);
 
-                expect(mediaElement.currentTime).to.equal(currentTime);
                 expect(setCurrentTime).to.have.not.been.called;
             });
 
             it('should not set the playbackRate', () => {
                 updateMediaElement(currentTime, duration, mediaElement, playbackRate, position, velocity);
 
-                expect(mediaElement.playbackRate).to.equal(playbackRate);
                 expect(setPlaybackRate).to.have.not.been.called;
             });
 
@@ -168,14 +148,12 @@ describe('updateMediaElement()', () => {
             it('should not set the currentTime', () => {
                 updateMediaElement(currentTime, duration, mediaElement, playbackRate, position, velocity);
 
-                expect(mediaElement.currentTime).to.equal(currentTime);
                 expect(setCurrentTime).to.have.not.been.called;
             });
 
             it('should not set the playbackRate', () => {
                 updateMediaElement(currentTime, duration, mediaElement, playbackRate, position, velocity);
 
-                expect(mediaElement.playbackRate).to.equal(playbackRate);
                 expect(setPlaybackRate).to.have.not.been.called;
             });
 
@@ -202,14 +180,12 @@ describe('updateMediaElement()', () => {
             it('should not set the currentTime', () => {
                 updateMediaElement(currentTime, duration, mediaElement, playbackRate, position, velocity);
 
-                expect(mediaElement.currentTime).to.equal(currentTime);
                 expect(setCurrentTime).to.have.not.been.called;
             });
 
             it('should not set the playbackRate', () => {
                 updateMediaElement(currentTime, duration, mediaElement, playbackRate, position, velocity);
 
-                expect(mediaElement.playbackRate).to.equal(playbackRate);
                 expect(setPlaybackRate).to.have.not.been.called;
             });
 
@@ -236,14 +212,12 @@ describe('updateMediaElement()', () => {
             it('should not set the currentTime', () => {
                 updateMediaElement(currentTime, duration, mediaElement, playbackRate, position, velocity);
 
-                expect(mediaElement.currentTime).to.equal(currentTime);
                 expect(setCurrentTime).to.have.not.been.called;
             });
 
             it('should not set the playbackRate', () => {
                 updateMediaElement(currentTime, duration, mediaElement, playbackRate, position, velocity);
 
-                expect(mediaElement.playbackRate).to.equal(playbackRate);
                 expect(setPlaybackRate).to.have.not.been.called;
             });
 
@@ -283,7 +257,6 @@ describe('updateMediaElement()', () => {
                 it('should not set the currentTime', () => {
                     updateMediaElement(currentTime, duration, mediaElement, playbackRate, position, velocity);
 
-                    expect(mediaElement.currentTime).to.equal(currentTime);
                     expect(setCurrentTime).to.have.not.been.called;
                 });
             });
@@ -292,15 +265,13 @@ describe('updateMediaElement()', () => {
                 it('should set the currentTime to 0', () => {
                     updateMediaElement(currentTime, duration, mediaElement, playbackRate, position, velocity);
 
-                    expect(mediaElement.currentTime).to.equal(0);
-                    expect(setCurrentTime).to.have.been.calledOnce.and.calledWithExactly(0);
+                    expect(setCurrentTime).to.have.been.calledOnce.and.calledWithExactly(mediaElement, currentTime, 0);
                 });
             });
 
             it('should not set the playbackRate', () => {
                 updateMediaElement(currentTime, duration, mediaElement, playbackRate, position, velocity);
 
-                expect(mediaElement.playbackRate).to.equal(playbackRate);
                 expect(setPlaybackRate).to.have.not.been.called;
             });
 
@@ -332,7 +303,6 @@ describe('updateMediaElement()', () => {
                 it('should not set the currentTime', () => {
                     updateMediaElement(currentTime, duration, mediaElement, playbackRate, position, velocity);
 
-                    expect(mediaElement.currentTime).to.equal(currentTime);
                     expect(setCurrentTime).to.have.not.been.called;
                 });
             });
@@ -341,15 +311,13 @@ describe('updateMediaElement()', () => {
                 it('should set the currentTime to 0', () => {
                     updateMediaElement(currentTime, duration, mediaElement, playbackRate, position, velocity);
 
-                    expect(mediaElement.currentTime).to.equal(0);
-                    expect(setCurrentTime).to.have.been.calledOnce.and.calledWithExactly(0);
+                    expect(setCurrentTime).to.have.been.calledOnce.and.calledWithExactly(mediaElement, currentTime, 0);
                 });
             });
 
             it('should not set the playbackRate', () => {
                 updateMediaElement(currentTime, duration, mediaElement, playbackRate, position, velocity);
 
-                expect(mediaElement.playbackRate).to.equal(playbackRate);
                 expect(setPlaybackRate).to.have.not.been.called;
             });
 
@@ -381,7 +349,6 @@ describe('updateMediaElement()', () => {
                 it('should not set the currentTime', () => {
                     updateMediaElement(currentTime, duration, mediaElement, playbackRate, position, velocity);
 
-                    expect(mediaElement.currentTime).to.equal(currentTime);
                     expect(setCurrentTime).to.have.not.been.called;
                 });
             });
@@ -390,15 +357,13 @@ describe('updateMediaElement()', () => {
                 it('should set the currentTime to 0', () => {
                     updateMediaElement(currentTime, duration, mediaElement, playbackRate, position, velocity);
 
-                    expect(mediaElement.currentTime).to.equal(0);
-                    expect(setCurrentTime).to.have.been.calledOnce.and.calledWithExactly(0);
+                    expect(setCurrentTime).to.have.been.calledOnce.and.calledWithExactly(mediaElement, currentTime, 0);
                 });
             });
 
             it('should not set the playbackRate', () => {
                 updateMediaElement(currentTime, duration, mediaElement, playbackRate, position, velocity);
 
-                expect(mediaElement.playbackRate).to.equal(playbackRate);
                 expect(setPlaybackRate).to.have.not.been.called;
             });
 
@@ -433,14 +398,12 @@ describe('updateMediaElement()', () => {
             it('should set the currentTime', () => {
                 updateMediaElement(currentTime, duration, mediaElement, playbackRate, position, velocity);
 
-                expect(mediaElement.currentTime).to.equal(position);
-                expect(setCurrentTime).to.have.been.calledOnce.and.calledWithExactly(position);
+                expect(setCurrentTime).to.have.been.calledOnce.and.calledWithExactly(mediaElement, currentTime, position);
             });
 
             it('should not set the playbackRate', () => {
                 updateMediaElement(currentTime, duration, mediaElement, playbackRate, position, velocity);
 
-                expect(mediaElement.playbackRate).to.equal(playbackRate);
                 expect(setPlaybackRate).to.have.not.been.called;
             });
 
@@ -467,15 +430,13 @@ describe('updateMediaElement()', () => {
             it('should set the currentTime', () => {
                 updateMediaElement(currentTime, duration, mediaElement, playbackRate, position, velocity);
 
-                expect(mediaElement.currentTime).to.equal(position);
-                expect(setCurrentTime).to.have.been.calledOnce.and.calledWithExactly(position);
+                expect(setCurrentTime).to.have.been.calledOnce.and.calledWithExactly(mediaElement, currentTime, position);
             });
 
             it('should set the playbackRate', () => {
                 updateMediaElement(currentTime, duration, mediaElement, playbackRate, position, velocity);
 
-                expect(mediaElement.playbackRate).to.equal(velocity);
-                expect(setPlaybackRate).to.have.been.calledOnce.and.calledWithExactly(velocity);
+                expect(setPlaybackRate).to.have.been.calledOnce.and.calledWithExactly(mediaElement, playbackRate, velocity);
             });
 
             it('should not call pause()', () => {
@@ -501,14 +462,12 @@ describe('updateMediaElement()', () => {
             it('should set the currentTime', () => {
                 updateMediaElement(currentTime, duration, mediaElement, playbackRate, position, velocity);
 
-                expect(mediaElement.currentTime).to.equal(position);
-                expect(setCurrentTime).to.have.been.calledOnce.and.calledWithExactly(position);
+                expect(setCurrentTime).to.have.been.calledOnce.and.calledWithExactly(mediaElement, currentTime, position);
             });
 
             it('should not set the playbackRate', () => {
                 updateMediaElement(currentTime, duration, mediaElement, playbackRate, position, velocity);
 
-                expect(mediaElement.playbackRate).to.equal(playbackRate);
                 expect(setPlaybackRate).to.have.not.been.called;
             });
 
@@ -548,7 +507,6 @@ describe('updateMediaElement()', () => {
                 it('should not set the currentTime', () => {
                     updateMediaElement(currentTime, duration, mediaElement, playbackRate, position, velocity);
 
-                    expect(mediaElement.currentTime).to.equal(currentTime);
                     expect(setCurrentTime).to.have.not.been.called;
                 });
             });
@@ -557,15 +515,13 @@ describe('updateMediaElement()', () => {
                 it('should set the currentTime to the duration', () => {
                     updateMediaElement(currentTime, duration, mediaElement, playbackRate, position, velocity);
 
-                    expect(mediaElement.currentTime).to.equal(duration);
-                    expect(setCurrentTime).to.have.been.calledOnce.and.calledWithExactly(duration);
+                    expect(setCurrentTime).to.have.been.calledOnce.and.calledWithExactly(mediaElement, currentTime, duration);
                 });
             });
 
             it('should not set the playbackRate', () => {
                 updateMediaElement(currentTime, duration, mediaElement, playbackRate, position, velocity);
 
-                expect(mediaElement.playbackRate).to.equal(playbackRate);
                 expect(setPlaybackRate).to.have.not.been.called;
             });
 
@@ -597,7 +553,6 @@ describe('updateMediaElement()', () => {
                 it('should not set the currentTime', () => {
                     updateMediaElement(currentTime, duration, mediaElement, playbackRate, position, velocity);
 
-                    expect(mediaElement.currentTime).to.equal(currentTime);
                     expect(setCurrentTime).to.have.not.been.called;
                 });
             });
@@ -606,15 +561,13 @@ describe('updateMediaElement()', () => {
                 it('should set the currentTime to the duration', () => {
                     updateMediaElement(currentTime, duration, mediaElement, playbackRate, position, velocity);
 
-                    expect(mediaElement.currentTime).to.equal(duration);
-                    expect(setCurrentTime).to.have.been.calledOnce.and.calledWithExactly(duration);
+                    expect(setCurrentTime).to.have.been.calledOnce.and.calledWithExactly(mediaElement, currentTime, duration);
                 });
             });
 
             it('should not set the playbackRate', () => {
                 updateMediaElement(currentTime, duration, mediaElement, playbackRate, position, velocity);
 
-                expect(mediaElement.playbackRate).to.equal(playbackRate);
                 expect(setPlaybackRate).to.have.not.been.called;
             });
 
@@ -646,7 +599,6 @@ describe('updateMediaElement()', () => {
                 it('should not set the currentTime', () => {
                     updateMediaElement(currentTime, duration, mediaElement, playbackRate, position, velocity);
 
-                    expect(mediaElement.currentTime).to.equal(currentTime);
                     expect(setCurrentTime).to.have.not.been.called;
                 });
             });
@@ -655,15 +607,13 @@ describe('updateMediaElement()', () => {
                 it('should set the currentTime to the duration', () => {
                     updateMediaElement(currentTime, duration, mediaElement, playbackRate, position, velocity);
 
-                    expect(mediaElement.currentTime).to.equal(duration);
-                    expect(setCurrentTime).to.have.been.calledOnce.and.calledWithExactly(duration);
+                    expect(setCurrentTime).to.have.been.calledOnce.and.calledWithExactly(mediaElement, currentTime, duration);
                 });
             });
 
             it('should not set the playbackRate', () => {
                 updateMediaElement(currentTime, duration, mediaElement, playbackRate, position, velocity);
 
-                expect(mediaElement.playbackRate).to.equal(playbackRate);
                 expect(setPlaybackRate).to.have.not.been.called;
             });
 
