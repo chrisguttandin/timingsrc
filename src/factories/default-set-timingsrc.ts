@@ -1,4 +1,4 @@
-import { TDefaultSetTimingsrcFactory } from '../types';
+import { TDefaultSetTimingsrcFactory, TSetTimingsrcFunction } from '../types';
 
 const DEFAULT_THRESHOLD = 1;
 const DEFAULT_TIME_CONSTANT = 0.5;
@@ -11,9 +11,10 @@ export const createDefaultSetTimingsrc: TDefaultSetTimingsrcFactory = (
     setTimingsrcWithCustomUpdateFunction,
     window
 ) =>
-    createSetTimingsrc(
-        setTimingsrcWithCustomUpdateFunction,
-        window !== null && window.navigator.userAgent.includes('Safari') && !window.navigator.userAgent.includes('Chrome')
-            ? createUpdateStepwise(DEFAULT_TOLERANCE)
-            : createUpdateGradually(DEFAULT_TIME_CONSTANT, DEFAULT_THRESHOLD, DEFAULT_TOLERANCE)
-    );
+    window !== null && window.navigator.userAgent.includes('Safari') && !window.navigator.userAgent.includes('Chrome')
+        ? (...args: Parameters<TSetTimingsrcFunction>) =>
+              createSetTimingsrc(setTimingsrcWithCustomUpdateFunction, createUpdateStepwise(DEFAULT_TOLERANCE))(...args)
+        : createSetTimingsrc(
+              setTimingsrcWithCustomUpdateFunction,
+              createUpdateGradually(DEFAULT_TIME_CONSTANT, DEFAULT_THRESHOLD, DEFAULT_TOLERANCE)
+          );
