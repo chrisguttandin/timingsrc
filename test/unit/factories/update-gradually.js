@@ -21,7 +21,7 @@ describe('updateGradually()', () => {
             velocity = 0;
         });
 
-        describe('with a position below zwero', () => {
+        describe('with a position below zero', () => {
             let timingStateVector;
 
             beforeEach(() => {
@@ -101,7 +101,7 @@ describe('updateGradually()', () => {
             velocity = 1;
         });
 
-        describe('with a position below zwero', () => {
+        describe('with a position below zero', () => {
             let timingStateVector;
 
             beforeEach(() => {
