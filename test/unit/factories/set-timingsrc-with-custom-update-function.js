@@ -4,7 +4,6 @@ import { createSetTimingsrcWithCustomUpdateFunction } from '../../../src/factori
 describe('setTimingsrcWithCustomUpdateFunction()', () => {
     let animationFrame;
     let mediaElement;
-    let prepareTimingStateVector;
     let setTimingsrcWithCustomUpdateFunction;
     let subscribe;
     let timingObject;
@@ -13,11 +12,10 @@ describe('setTimingsrcWithCustomUpdateFunction()', () => {
 
     beforeEach(() => {
         animationFrame = stub();
-        mediaElement = 'a fake MediaElement';
-        prepareTimingStateVector = 'a fake prepareTimingStateVector() function';
+        mediaElement = { currentTime: 'a fake currentTime', playbackRate: 'a fake playbackRate' };
         subscribe = stub();
-        timingObject = 'a fake TimingObject';
-        updateFunction = spy();
+        timingObject = { query: stub() };
+        updateFunction = stub();
         updateMediaElement = spy();
 
         animationFrame.returns(subscribe);
@@ -26,13 +24,13 @@ describe('setTimingsrcWithCustomUpdateFunction()', () => {
     });
 
     it('should call animationFrame without any arguments', () => {
-        setTimingsrcWithCustomUpdateFunction(mediaElement, timingObject, updateFunction, prepareTimingStateVector);
+        setTimingsrcWithCustomUpdateFunction(mediaElement, timingObject, updateFunction);
 
         expect(animationFrame).to.have.been.calledOnce.and.calledWithExactly();
     });
 
     it('should call the function returned by the animationFrame', () => {
-        setTimingsrcWithCustomUpdateFunction(mediaElement, timingObject, updateFunction, prepareTimingStateVector);
+        setTimingsrcWithCustomUpdateFunction(mediaElement, timingObject, updateFunction);
 
         expect(subscribe).to.have.been.calledOnce;
 
@@ -45,6 +43,185 @@ describe('setTimingsrcWithCustomUpdateFunction()', () => {
 
         subscribe.returns(value);
 
-        expect(setTimingsrcWithCustomUpdateFunction(mediaElement, timingObject, updateFunction, prepareTimingStateVector)).to.equal(value);
+        expect(setTimingsrcWithCustomUpdateFunction(mediaElement, timingObject, updateFunction)).to.equal(value);
+    });
+
+    describe('without a prepareTimingStateVector function', () => {
+        let next;
+        let position;
+        let timingStateVector;
+        let velocity;
+
+        beforeEach(() => {
+            position = 'a fake position';
+            timingStateVector = 'a fake timingStateVector';
+            velocity = 'a fake velocity';
+
+            subscribe.callsFake((value) => (next = value));
+            timingObject.query.returns(timingStateVector);
+            updateFunction.returns({ position, velocity });
+
+            setTimingsrcWithCustomUpdateFunction(mediaElement, timingObject, updateFunction);
+        });
+
+        it('should call query() on the given timingObject', () => {
+            next();
+
+            expect(timingObject.query).to.have.been.calledOnce.and.calledWithExactly();
+        });
+
+        it('should call updateFunction()', () => {
+            next();
+
+            expect(updateFunction).to.have.been.calledOnce.and.calledWithExactly(timingStateVector, mediaElement.currentTime);
+        });
+
+        describe('with an undefined duration', () => {
+            it('should call updateMediaElement()', () => {
+                next();
+
+                expect(updateMediaElement).to.have.been.calledOnce.and.calledWithExactly(
+                    mediaElement.currentTime,
+                    0,
+                    mediaElement,
+                    mediaElement.playbackRate,
+                    position,
+                    velocity
+                );
+            });
+        });
+
+        describe('with a duration which is not a number', () => {
+            beforeEach(() => {
+                mediaElement.duration = NaN;
+            });
+
+            it('should call updateMediaElement()', () => {
+                next();
+
+                expect(updateMediaElement).to.have.been.calledOnce.and.calledWithExactly(
+                    mediaElement.currentTime,
+                    0,
+                    mediaElement,
+                    mediaElement.playbackRate,
+                    position,
+                    velocity
+                );
+            });
+        });
+
+        describe('with a duration of type number', () => {
+            beforeEach(() => {
+                mediaElement.duration = 18;
+            });
+
+            it('should call updateMediaElement()', () => {
+                next();
+
+                expect(updateMediaElement).to.have.been.calledOnce.and.calledWithExactly(
+                    mediaElement.currentTime,
+                    18,
+                    mediaElement,
+                    mediaElement.playbackRate,
+                    position,
+                    velocity
+                );
+            });
+        });
+    });
+
+    describe('with a prepareTimingStateVector function', () => {
+        let next;
+        let position;
+        let prepareTimingStateVector;
+        let timingStateVector;
+        let preparedTimingStateVector;
+        let velocity;
+
+        beforeEach(() => {
+            position = 'a fake position';
+            prepareTimingStateVector = stub();
+            timingStateVector = 'a fake timingStateVector';
+            preparedTimingStateVector = 'a fake preparedTimingStateVector';
+            velocity = 'a fake velocity';
+
+            prepareTimingStateVector.returns(preparedTimingStateVector);
+            subscribe.callsFake((value) => (next = value));
+            timingObject.query.returns(timingStateVector);
+            updateFunction.returns({ position, velocity });
+
+            setTimingsrcWithCustomUpdateFunction(mediaElement, timingObject, updateFunction, prepareTimingStateVector);
+        });
+
+        it('should call query() on the given timingObject', () => {
+            next();
+
+            expect(timingObject.query).to.have.been.calledOnce.and.calledWithExactly();
+        });
+
+        it('should call prepareTimingStateVector()', () => {
+            next();
+
+            expect(prepareTimingStateVector).to.have.been.calledOnce.and.calledWithExactly(timingStateVector);
+        });
+
+        it('should call updateFunction()', () => {
+            next();
+
+            expect(updateFunction).to.have.been.calledOnce.and.calledWithExactly(preparedTimingStateVector, mediaElement.currentTime);
+        });
+
+        describe('with an undefined duration', () => {
+            it('should call updateMediaElement()', () => {
+                next();
+
+                expect(updateMediaElement).to.have.been.calledOnce.and.calledWithExactly(
+                    mediaElement.currentTime,
+                    0,
+                    mediaElement,
+                    mediaElement.playbackRate,
+                    position,
+                    velocity
+                );
+            });
+        });
+
+        describe('with a duration which is not a number', () => {
+            beforeEach(() => {
+                mediaElement.duration = NaN;
+            });
+
+            it('should call updateMediaElement()', () => {
+                next();
+
+                expect(updateMediaElement).to.have.been.calledOnce.and.calledWithExactly(
+                    mediaElement.currentTime,
+                    0,
+                    mediaElement,
+                    mediaElement.playbackRate,
+                    position,
+                    velocity
+                );
+            });
+        });
+
+        describe('with a duration of type number', () => {
+            beforeEach(() => {
+                mediaElement.duration = 18;
+            });
+
+            it('should call updateMediaElement()', () => {
+                next();
+
+                expect(updateMediaElement).to.have.been.calledOnce.and.calledWithExactly(
+                    mediaElement.currentTime,
+                    18,
+                    mediaElement,
+                    mediaElement.playbackRate,
+                    position,
+                    velocity
+                );
+            });
+        });
     });
 });
