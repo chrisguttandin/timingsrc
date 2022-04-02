@@ -2,6 +2,10 @@ import { TUpdateGraduallyFactory } from '../types';
 
 export const createUpdateGradually: TUpdateGraduallyFactory = (timeConstant, threshold, tolerance) => {
     return ({ position, velocity }, currentTime) => {
+        if (velocity < 0) {
+            return { position, velocity: 0 };
+        }
+
         if (position < 0 || velocity === 0) {
             return { position, velocity };
         }
@@ -14,7 +18,7 @@ export const createUpdateGradually: TUpdateGraduallyFactory = (timeConstant, thr
         }
 
         if (absolutePositionDifference > tolerance) {
-            return { position: currentTime, velocity: ((timeConstant - positionDifference) / timeConstant) * velocity };
+            return { position: currentTime, velocity: Math.max(0, ((timeConstant - positionDifference) / timeConstant) * velocity) };
         }
 
         return { position: currentTime, velocity };
