@@ -30,7 +30,7 @@ describe('updateGradually()', () => {
                 timingStateVector = { position, velocity };
             });
 
-            it('should return an unchanged position and velocity of zero', () => {
+            it('should return an unchanged position but a velocity of zero', () => {
                 expect(updateGradually(timingStateVector, 5)).to.deep.equal({ position, velocity: 0 });
             });
         });
@@ -44,7 +44,7 @@ describe('updateGradually()', () => {
                 timingStateVector = { position, velocity };
             });
 
-            it('should return an unchanged position and velocity of zero', () => {
+            it('should return an unchanged position but a velocity of zero', () => {
                 expect(updateGradually(timingStateVector, 5)).to.deep.equal({ position, velocity: 0 });
             });
         });
@@ -58,7 +58,7 @@ describe('updateGradually()', () => {
                 timingStateVector = { position, velocity };
             });
 
-            it('should return an unchanged position and velocity of zero', () => {
+            it('should return an unchanged position but a velocity of zero', () => {
                 expect(updateGradually(timingStateVector, 5)).to.deep.equal({ position, velocity: 0 });
             });
         });
@@ -72,7 +72,7 @@ describe('updateGradually()', () => {
                 timingStateVector = { position, velocity };
             });
 
-            it('should return an unchanged position and velocity of zero', () => {
+            it('should return an unchanged position but a velocity of zero', () => {
                 expect(updateGradually(timingStateVector, 5)).to.deep.equal({ position, velocity: 0 });
             });
         });
@@ -86,7 +86,7 @@ describe('updateGradually()', () => {
                 timingStateVector = { position, velocity };
             });
 
-            it('should return an unchanged position and velocity of zero', () => {
+            it('should return an unchanged position but a velocity of zero', () => {
                 expect(updateGradually(timingStateVector, 5)).to.deep.equal({ position, velocity: 0 });
             });
         });
@@ -100,7 +100,7 @@ describe('updateGradually()', () => {
                 timingStateVector = { position, velocity };
             });
 
-            it('should return an unchanged position and velocity of zero', () => {
+            it('should return an unchanged position but a velocity of zero', () => {
                 expect(updateGradually(timingStateVector, 5)).to.deep.equal({ position, velocity: 0 });
             });
         });
@@ -224,7 +224,7 @@ describe('updateGradually()', () => {
                 timingStateVector = { position: 3, velocity };
             });
 
-            it('should return an updated position and velocity', () => {
+            it('should return an unchanged position but a velocity of zero', () => {
                 expect(updateGradually(timingStateVector, 5)).to.deep.equal({ position: 5, velocity: 0 });
             });
         });
