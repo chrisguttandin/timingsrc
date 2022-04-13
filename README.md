@@ -36,6 +36,12 @@ const deleteTimingsrc = setTimingsrc(mediaElement, timingObject);
 deleteTimingsrc();
 ```
 
+`setTimingsrc()` takes a third parameter which can be used to provide a function to modify the vector before it gets applied. It can for example be used to add a fixed offset.
+
+```js
+setTimingsrc(mediaElement, timingObject, ({ position, ...vector }) => ({ ...vector, position: position + 5 }));
+```
+
 It is also possible to configure a custom version of the `setTimingsrc()` function. The following would build a `setTimingSrc()` function which does not include the fallback for stepwise updates which is necessary in Safari.
 
 ```js
