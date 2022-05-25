@@ -1,4 +1,4 @@
-import { animationFrame } from 'subscribable-things';
+import { animationFrame, on } from 'subscribable-things';
 import { translateTimingStateVector } from 'timing-object';
 import { createDefaultSetTimingsrc } from './factories/default-set-timingsrc';
 import { createSetCurrentTime } from './factories/set-current-time';
@@ -20,7 +20,12 @@ export const createUpdateStepwise = createUpdateStepwiseFactory(translateTimingS
 
 const updateMediaElement = createUpdateMediaElement(pause, play, createSetCurrentTime(new WeakMap()), createSetPlaybackRate(new WeakMap()));
 
-export const setTimingsrcWithCustomUpdateFunction = createSetTimingsrcWithCustomUpdateFunction(animationFrame, updateMediaElement);
+export const setTimingsrcWithCustomUpdateFunction = createSetTimingsrcWithCustomUpdateFunction(
+    animationFrame,
+    document,
+    on,
+    updateMediaElement
+);
 
 export const setTimingsrc = createDefaultSetTimingsrc(
     createSetTimingsrc,
