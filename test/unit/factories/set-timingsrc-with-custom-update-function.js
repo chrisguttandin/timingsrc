@@ -51,10 +51,10 @@ describe('setTimingsrcWithCustomUpdateFunction()', () => {
         expect(subscribeToAnimationFrame.firstCall.args[0]).to.be.a('function');
     });
 
-    it('should call on to subscribe to the update event of the given timingObject', () => {
+    it('should call on to subscribe to the change event of the given timingObject', () => {
         setTimingsrcWithCustomUpdateFunction(mediaElement, timingObject, updateFunction);
 
-        expect(on).to.have.been.calledOnce.and.calledWithExactly(timingObject, 'update');
+        expect(on).to.have.been.calledOnce.and.calledWithExactly(timingObject, 'change');
     });
 
     it('should call the function returned by on', () => {
