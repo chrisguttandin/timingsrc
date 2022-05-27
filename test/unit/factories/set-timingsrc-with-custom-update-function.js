@@ -86,7 +86,7 @@ describe('setTimingsrcWithCustomUpdateFunction()', () => {
         expect(unsubscribeFromOn).to.have.been.calledOnce.and.calledWithExactly();
     });
 
-    for (const event of ['animationFrame', 'update event']) {
+    for (const event of ['animationFrame', 'change event']) {
         describe(`on a new ${event}`, () => {
             describe('without a prepareTimingStateVector function', () => {
                 let next;

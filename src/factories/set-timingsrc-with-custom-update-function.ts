@@ -23,7 +23,7 @@ export const createSetTimingsrcWithCustomUpdateFunction: TSetTimingsrcWithCustom
             animationFrame()(() => update()),
             on(
                 timingObject,
-                'update'
+                'change'
             )(() => {
                 if (document.visibilityState === 'hidden') {
                     update();
