@@ -8,6 +8,7 @@ export const createDefaultSetTimingsrc: TDefaultSetTimingsrcFactory = (
     createSetTimingsrc,
     createUpdateGradually,
     createUpdateStepwise,
+    determineSupportedPlaybackRateValues,
     setTimingsrcWithCustomUpdateFunction,
     window
 ) =>
@@ -16,5 +17,10 @@ export const createDefaultSetTimingsrc: TDefaultSetTimingsrcFactory = (
               createSetTimingsrc(setTimingsrcWithCustomUpdateFunction, createUpdateStepwise(DEFAULT_TOLERANCE))(...args)
         : createSetTimingsrc(
               setTimingsrcWithCustomUpdateFunction,
-              createUpdateGradually(DEFAULT_TIME_CONSTANT, DEFAULT_THRESHOLD, DEFAULT_TOLERANCE)
+              createUpdateGradually(
+                  determineSupportedPlaybackRateValues(window),
+                  DEFAULT_TIME_CONSTANT,
+                  DEFAULT_THRESHOLD,
+                  DEFAULT_TOLERANCE
+              )
           );

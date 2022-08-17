@@ -11,7 +11,7 @@ describe('updateGradually()', () => {
         threshold = 2;
         tolerance = 1;
 
-        updateGradually = createUpdateGradually(timeConstant, threshold, tolerance);
+        updateGradually = createUpdateGradually([0, Number.MAX_VALUE], timeConstant, threshold, tolerance);
     });
 
     describe('with a velocity below zero', () => {
