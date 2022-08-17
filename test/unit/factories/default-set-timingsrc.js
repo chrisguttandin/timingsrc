@@ -5,6 +5,7 @@ describe('defaultSetTimingsrc()', () => {
     let createSetTimingsrc;
     let createUpdateGradually;
     let createUpdateStepwise;
+    let determineSupportedPlaybackRateValues;
     let setTimingsrc;
     let setTimingsrcWithCustomUpdateFunction;
     let subscription;
@@ -16,6 +17,7 @@ describe('defaultSetTimingsrc()', () => {
         createSetTimingsrc = stub();
         createUpdateGradually = stub();
         createUpdateStepwise = stub();
+        determineSupportedPlaybackRateValues = stub();
         setTimingsrc = stub();
         setTimingsrcWithCustomUpdateFunction = spy();
         subscription = 'a fake subscription';
@@ -26,6 +28,7 @@ describe('defaultSetTimingsrc()', () => {
         createSetTimingsrc.returns(setTimingsrc);
         createUpdateGradually.returns(updateGradually);
         createUpdateStepwise.returns(updateStepwise);
+        determineSupportedPlaybackRateValues.returns([0, Number.MAX_VALUE]);
         setTimingsrc.returns(subscription);
     });
 
@@ -37,16 +40,30 @@ describe('defaultSetTimingsrc()', () => {
             };
         });
 
+        it('should call determineSupportedPlaybackRateValues internally with the window object', () => {
+            createDefaultSetTimingsrc(
+                createSetTimingsrc,
+                createUpdateGradually,
+                createUpdateStepwise,
+                determineSupportedPlaybackRateValues,
+                setTimingsrcWithCustomUpdateFunction,
+                window
+            );
+
+            expect(determineSupportedPlaybackRateValues).to.have.been.calledOnce.and.calledWithExactly(window);
+        });
+
         it('should call createUpdateGradually with the default arguments', () => {
             createDefaultSetTimingsrc(
                 createSetTimingsrc,
                 createUpdateGradually,
                 createUpdateStepwise,
+                determineSupportedPlaybackRateValues,
                 setTimingsrcWithCustomUpdateFunction,
                 window
             );
 
-            expect(createUpdateGradually).to.have.been.calledOnce.and.calledWithExactly(0.5, 1, 0.025);
+            expect(createUpdateGradually).to.have.been.calledOnce.and.calledWithExactly([0, Number.MAX_VALUE], 0.5, 1, 0.025);
         });
 
         it('should call createSetTimingsrc internally with the function that applies gradual updates', () => {
@@ -54,6 +71,7 @@ describe('defaultSetTimingsrc()', () => {
                 createSetTimingsrc,
                 createUpdateGradually,
                 createUpdateStepwise,
+                determineSupportedPlaybackRateValues,
                 setTimingsrcWithCustomUpdateFunction,
                 window
             );
@@ -67,6 +85,7 @@ describe('defaultSetTimingsrc()', () => {
                     createSetTimingsrc,
                     createUpdateGradually,
                     createUpdateStepwise,
+                    determineSupportedPlaybackRateValues,
                     setTimingsrcWithCustomUpdateFunction,
                     window
                 )
@@ -79,16 +98,30 @@ describe('defaultSetTimingsrc()', () => {
             window.navigator = { userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:77.0) Gecko/20100101 Firefox/77.0' };
         });
 
+        it('should call determineSupportedPlaybackRateValues internally with the window object', () => {
+            createDefaultSetTimingsrc(
+                createSetTimingsrc,
+                createUpdateGradually,
+                createUpdateStepwise,
+                determineSupportedPlaybackRateValues,
+                setTimingsrcWithCustomUpdateFunction,
+                window
+            );
+
+            expect(determineSupportedPlaybackRateValues).to.have.been.calledOnce.and.calledWithExactly(window);
+        });
+
         it('should call createUpdateGradually with the default arguments', () => {
             createDefaultSetTimingsrc(
                 createSetTimingsrc,
                 createUpdateGradually,
                 createUpdateStepwise,
+                determineSupportedPlaybackRateValues,
                 setTimingsrcWithCustomUpdateFunction,
                 window
             );
 
-            expect(createUpdateGradually).to.have.been.calledOnce.and.calledWithExactly(0.5, 1, 0.025);
+            expect(createUpdateGradually).to.have.been.calledOnce.and.calledWithExactly([0, Number.MAX_VALUE], 0.5, 1, 0.025);
         });
 
         it('should call createSetTimingsrc internally with the function that applies gradual updates', () => {
@@ -96,6 +129,7 @@ describe('defaultSetTimingsrc()', () => {
                 createSetTimingsrc,
                 createUpdateGradually,
                 createUpdateStepwise,
+                determineSupportedPlaybackRateValues,
                 setTimingsrcWithCustomUpdateFunction,
                 window
             );
@@ -109,6 +143,7 @@ describe('defaultSetTimingsrc()', () => {
                     createSetTimingsrc,
                     createUpdateGradually,
                     createUpdateStepwise,
+                    determineSupportedPlaybackRateValues,
                     setTimingsrcWithCustomUpdateFunction,
                     window
                 )
@@ -133,6 +168,7 @@ describe('defaultSetTimingsrc()', () => {
                 createSetTimingsrc,
                 createUpdateGradually,
                 createUpdateStepwise,
+                determineSupportedPlaybackRateValues,
                 setTimingsrcWithCustomUpdateFunction,
                 window
             )(...args);
@@ -145,6 +181,7 @@ describe('defaultSetTimingsrc()', () => {
                 createSetTimingsrc,
                 createUpdateGradually,
                 createUpdateStepwise,
+                determineSupportedPlaybackRateValues,
                 setTimingsrcWithCustomUpdateFunction,
                 window
             )(...args);
@@ -157,6 +194,7 @@ describe('defaultSetTimingsrc()', () => {
                 createSetTimingsrc,
                 createUpdateGradually,
                 createUpdateStepwise,
+                determineSupportedPlaybackRateValues,
                 setTimingsrcWithCustomUpdateFunction,
                 window
             )(...args);
@@ -170,6 +208,7 @@ describe('defaultSetTimingsrc()', () => {
                     createSetTimingsrc,
                     createUpdateGradually,
                     createUpdateStepwise,
+                    determineSupportedPlaybackRateValues,
                     setTimingsrcWithCustomUpdateFunction,
                     window
                 )(...args)

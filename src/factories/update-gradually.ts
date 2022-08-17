@@ -1,8 +1,8 @@
 import { TUpdateGraduallyFactory } from '../types';
 
-export const createUpdateGradually: TUpdateGraduallyFactory = (timeConstant, threshold, tolerance) => {
+export const createUpdateGradually: TUpdateGraduallyFactory = ([minValue, maxValue], timeConstant, threshold, tolerance) => {
     return ({ position, velocity }, currentTime) => {
-        if (velocity < 0) {
+        if (velocity < minValue || velocity > maxValue) {
             return { position, velocity: 0 };
         }
 
@@ -18,7 +18,10 @@ export const createUpdateGradually: TUpdateGraduallyFactory = (timeConstant, thr
         }
 
         if (absolutePositionDifference > tolerance) {
-            return { position: currentTime, velocity: Math.max(0, ((timeConstant - positionDifference) / timeConstant) * velocity) };
+            return {
+                position: currentTime,
+                velocity: Math.max(minValue, Math.min(maxValue, ((timeConstant - positionDifference) / timeConstant) * velocity))
+            };
         }
 
         return { position: currentTime, velocity };
