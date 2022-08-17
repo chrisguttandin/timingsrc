@@ -1,1 +1,1 @@
-export type TWindowFactory = () => null | Window;
+export type TWindowFactory = () => null | (Window & typeof globalThis);

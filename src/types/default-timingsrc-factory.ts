@@ -9,5 +9,5 @@ export type TDefaultSetTimingsrcFactory = (
     createUpdateGradually: TUpdateGraduallyFactory,
     createUpdateStepwise: TUpdateStepwiseFactory,
     setTimingsrcWithCustomUpdateFunction: TSetTimingsrcWithCustomUpdateFunctionFunction,
-    window: null | Window
+    window: null | (Window & typeof globalThis)
 ) => TSetTimingsrcFunction;
