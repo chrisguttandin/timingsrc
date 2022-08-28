@@ -10,29 +10,27 @@ describe('MediaElement', () => {
         const url = URL.createObjectURL(blob);
 
         audioElement = new Audio(url);
+
+        audioElement.muted = true;
     });
 
     describe('currentTime', () => {
         // bug #4
 
-        // This test doesn't not pass when running on BrowserStack since there is no way to disable the autoplay policy.
-        // eslint-disable-next-line no-undef
-        if (!process.env.CI) {
-            it('should not increase monotonically', (done) => {
-                let currentTime = audioElement.currentTime;
+        it('should not increase monotonically', (done) => {
+            let currentTime = audioElement.currentTime;
 
-                const interval = setInterval(() => {
-                    if (currentTime - 0.01 > audioElement.currentTime) {
-                        clearInterval(interval);
-                        done();
-                    } else {
-                        currentTime = audioElement.currentTime;
-                    }
-                });
-
-                audioElement.play();
+            const interval = setInterval(() => {
+                if (currentTime - 0.01 > audioElement.currentTime) {
+                    clearInterval(interval);
+                    done();
+                } else {
+                    currentTime = audioElement.currentTime;
+                }
             });
-        }
+
+            audioElement.play();
+        });
 
         // bug #5
 
