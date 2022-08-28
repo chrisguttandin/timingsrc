@@ -29,5 +29,23 @@ describe('MediaElement', () => {
 
             audioElement.play();
         });
+
+        // bug #5
+
+        it('should limit the precision after a while', (done) => {
+            audioElement.currentTime = 0.4003200000000007;
+
+            expect(audioElement.currentTime).to.equal(0.4003200000000007);
+
+            setTimeout(() => {
+                expect(audioElement.currentTime).to.equal(0.4003200000000007);
+
+                setTimeout(() => {
+                    expect(audioElement.currentTime).to.equal(0.40032);
+
+                    done();
+                }, 100);
+            });
+        });
     });
 });
