@@ -3,6 +3,7 @@ import { TUpdateStepwiseFactoryFactory } from '../types';
 export const createUpdateStepwiseFactory: TUpdateStepwiseFactoryFactory = (translateTimingStateVector) => {
     return (tolerance) => {
         let lastMotionUpdate: null | { position: number; timestamp: number; velocity: number } = null;
+        let lastPlayheadDifference = 0;
         let mediaElementDelay = 0;
 
         return (timingStateVector, currentTime) => {
@@ -15,10 +16,14 @@ export const createUpdateStepwiseFactory: TUpdateStepwiseFactoryFactory = (trans
             if (lastMotionUpdate !== null) {
                 const playheadDifference = Math.abs(currentTime - lastMotionUpdate.position);
 
-                // Check if at least 10ms were played since the last motion update.
-                if (playheadDifference < 0.01) {
+                // Bug #4: Safari decreases currentTime after playing for about 200 milliseconds.
+                if (lastPlayheadDifference - 0.01 < playheadDifference && lastPlayheadDifference < 0.5) {
+                    lastPlayheadDifference = playheadDifference;
+
                     return { position: currentTime, velocity: lastMotionUpdate.velocity };
                 }
+
+                lastPlayheadDifference = Number.POSITIVE_INFINITY;
             }
 
             const positionDifference = Math.abs(currentTime - timingStateVector.position);
@@ -39,6 +44,7 @@ export const createUpdateStepwiseFactory: TUpdateStepwiseFactoryFactory = (trans
                     timestamp: timingStateVector.timestamp,
                     velocity: timingStateVector.velocity
                 };
+                lastPlayheadDifference = 0;
 
                 return { position: positioWithDelay, velocity: timingStateVector.velocity };
             }
