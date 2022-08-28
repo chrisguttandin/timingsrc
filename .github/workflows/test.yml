@@ -21,6 +21,9 @@ jobs:
                     - node-version: 16.x
                       target: firefox
                       type: expectation
+                    - node-version: 16.x
+                      target: safari
+                      type: expectation
                 node-version: [16.x]
                 target: [chrome, firefox, safari]
                 type: [integration, unit]
