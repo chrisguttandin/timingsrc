@@ -46,14 +46,10 @@ describe('MediaElement', () => {
                 expect(audioElement.currentTime).to.equal(0.4003200000000007);
 
                 setTimeout(() => {
-                    expect(audioElement.currentTime).to.equal(0.4003200000000007);
+                    expect(audioElement.currentTime).to.equal(0.40032);
 
-                    setTimeout(() => {
-                        expect(audioElement.currentTime).to.equal(0.40032);
-
-                        done();
-                    }, 100);
-                });
+                    done();
+                }, 100);
             };
 
             audioElement.load();
