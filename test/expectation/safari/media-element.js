@@ -51,6 +51,8 @@ describe('MediaElement', () => {
                     }, 100);
                 });
             };
+
+            audioElement.load();
         });
     });
 });
