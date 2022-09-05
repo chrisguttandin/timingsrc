@@ -2,7 +2,6 @@
 
 **A library to synchronize a MediaElement with a TimingObject.**
 
-[![dependencies](https://img.shields.io/david/chrisguttandin/timingsrc.svg?style=flat-square)](https://github.com/chrisguttandin/timingsrc/network/dependencies)
 [![version](https://img.shields.io/npm/v/timingsrc.svg?style=flat-square)](https://www.npmjs.com/package/timingsrc)
 
 This libary is meant to synchronize a [`MediaElement`](https://html.spec.whatwg.org/multipage/media.html#htmlmediaelement) (aka an `<audio/>` or `<video/>` element) with a [`TimingObject`](https://webtiming.github.io/timingobject/#dfn-timing-object).
