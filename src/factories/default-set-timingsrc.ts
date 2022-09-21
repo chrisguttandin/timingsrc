@@ -1,18 +1,27 @@
-import { TDefaultSetTimingsrcFactory } from '../types';
+import {
+    TDetermineSupportedPlaybackRateValuesFunction,
+    TSetTimingsrcFunction,
+    TUpdateGraduallyFactory,
+    TUpdateStepwiseFactory
+} from '../types';
+import type { createComputeVelocity as createComputeVelocityFunction } from './compute-velocity';
+import type { createSetTimingsrc as createSetTimingsrcFunction } from './set-timingsrc';
+import type { createSetTimingsrcWithCustomUpdateFunction } from './set-timingsrc-with-custom-update-function';
+import type { createWindow } from './window';
 
 const DEFAULT_THRESHOLD = 1;
 const DEFAULT_TIME_CONSTANT = 0.5;
 const DEFAULT_TOLERANCE = 0.025;
 
-export const createDefaultSetTimingsrc: TDefaultSetTimingsrcFactory = (
-    createComputeVelocity,
-    createSetTimingsrc,
-    createUpdateGradually,
-    createUpdateStepwise,
-    determineSupportedPlaybackRateValues,
-    setTimingsrcWithCustomUpdateFunction,
-    window
-) =>
+export const createDefaultSetTimingsrc = (
+    createComputeVelocity: typeof createComputeVelocityFunction,
+    createSetTimingsrc: typeof createSetTimingsrcFunction,
+    createUpdateGradually: TUpdateGraduallyFactory,
+    createUpdateStepwise: TUpdateStepwiseFactory,
+    determineSupportedPlaybackRateValues: TDetermineSupportedPlaybackRateValuesFunction,
+    setTimingsrcWithCustomUpdateFunction: ReturnType<typeof createSetTimingsrcWithCustomUpdateFunction>,
+    window: ReturnType<typeof createWindow>
+): TSetTimingsrcFunction =>
     createSetTimingsrc(
         setTimingsrcWithCustomUpdateFunction,
         window !== null && window.navigator.userAgent.includes('Safari') && !window.navigator.userAgent.includes('Chrome')
