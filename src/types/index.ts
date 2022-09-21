@@ -3,8 +3,6 @@ export * from './determine-supported-playback-rate-values-function';
 export * from './prepare-timing-state-vector-function';
 export * from './set-current-time-factory';
 export * from './set-current-time-function';
-export * from './set-playback-rate-factory';
-export * from './set-playback-rate-function';
 export * from './set-timingsrc-factory';
 export * from './set-timingsrc-function';
 export * from './set-timingsrc-with-custom-update-function-factory';

@@ -1,7 +1,5 @@
-import { TSetPlaybackRateFactory } from '../types';
-
-export const createSetPlaybackRate: TSetPlaybackRateFactory = (playbackRateAssignments) => {
-    return (mediaElement, previousValue, nextValue) => {
+export const createSetPlaybackRate = (playbackRateAssignments: WeakMap<HTMLMediaElement, [number, number]>) => {
+    return (mediaElement: HTMLMediaElement, previousValue: number, nextValue: number) => {
         const playbackRateAssignment = playbackRateAssignments.get(mediaElement);
 
         if (
