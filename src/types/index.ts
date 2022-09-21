@@ -1,6 +1,5 @@
 export * from './default-timingsrc-factory';
 export * from './determine-supported-playback-rate-values-function';
-export * from './pause-function';
 export * from './prepare-timing-state-vector-function';
 export * from './set-current-time-factory';
 export * from './set-current-time-function';
