@@ -1,7 +1,22 @@
-import { TUpdateMediaElementFactory } from '../types';
+import type { pause as pauseFunction } from '../functions/pause';
+import type { play as playFunction } from '../functions/play';
+import type { createSetCurrentTime } from './set-current-time';
+import type { createSetPlaybackRate } from './set-playback-rate';
 
-export const createUpdateMediaElement: TUpdateMediaElementFactory = (pause, play, setCurrentTime, setPlaybackRate) => {
-    return (currentTime, duration, mediaElement, playbackRate, position, velocity) => {
+export const createUpdateMediaElement = (
+    pause: typeof pauseFunction,
+    play: typeof playFunction,
+    setCurrentTime: ReturnType<typeof createSetCurrentTime>,
+    setPlaybackRate: ReturnType<typeof createSetPlaybackRate>
+) => {
+    return (
+        currentTime: number,
+        duration: number,
+        mediaElement: HTMLMediaElement,
+        playbackRate: number,
+        position: number,
+        velocity: number
+    ) => {
         if (position < 0) {
             if (currentTime > 0) {
                 setCurrentTime(mediaElement, currentTime, 0);
