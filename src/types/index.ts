@@ -1,7 +1,6 @@
 export * from './default-timingsrc-factory';
 export * from './determine-supported-playback-rate-values-function';
 export * from './prepare-timing-state-vector-function';
-export * from './set-timingsrc-factory';
 export * from './set-timingsrc-function';
 export * from './set-timingsrc-with-custom-update-function-factory';
 export * from './set-timingsrc-with-custom-update-function-function';
