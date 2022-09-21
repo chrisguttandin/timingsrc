@@ -1,7 +1,5 @@
-import { TSetCurrentTimeFactory } from '../types';
-
-export const createSetCurrentTime: TSetCurrentTimeFactory = (currentTimeAssignments) => {
-    return (mediaElement, previousValue, nextValue) => {
+export const createSetCurrentTime = (currentTimeAssignments: WeakMap<HTMLMediaElement, [number, number]>) => {
+    return (mediaElement: HTMLMediaElement, previousValue: number, nextValue: number) => {
         const currentTimeAssignment = currentTimeAssignments.get(mediaElement);
 
         if (
