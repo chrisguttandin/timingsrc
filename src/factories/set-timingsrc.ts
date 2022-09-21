@@ -1,4 +1,4 @@
-import { ITimingObject } from 'timing-object';
+import type { ITimingObject } from 'timing-object';
 import type { createSetTimingsrcWithCustomUpdateFunction } from '../factories/set-timingsrc-with-custom-update-function';
 import { TPrepareTimingStateVectorFunction, TUpdateFunction } from '../types';
 

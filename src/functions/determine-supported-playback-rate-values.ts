@@ -1,4 +1,4 @@
-import { createWindow } from '../factories/window';
+import type { createWindow } from '../factories/window';
 
 const DEFAULT_VALUES = [Number.MIN_VALUE, Number.MAX_VALUE] as const;
 
