@@ -1,6 +1,13 @@
-import { TUpdateGraduallyFactory } from '../types';
+import type { determineSupportedPlaybackRateValues } from '../functions/determine-supported-playback-rate-values';
+import { TUpdateFunction } from '../types';
+import type { createComputeVelocity } from './compute-velocity';
 
-export const createUpdateGradually: TUpdateGraduallyFactory = (computeVelocity, [minValue, maxValue], threshold, tolerance) => {
+export const createUpdateGradually = (
+    computeVelocity: ReturnType<typeof createComputeVelocity>,
+    [minValue, maxValue]: ReturnType<typeof determineSupportedPlaybackRateValues>,
+    threshold: number,
+    tolerance: number
+): TUpdateFunction => {
     let lastPosition: null | number = null;
     let mediaElementDelay = 0;
 
