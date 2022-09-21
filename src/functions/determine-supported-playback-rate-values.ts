@@ -1,6 +1,8 @@
+import { createWindow } from '../factories/window';
+
 const DEFAULT_VALUES = [Number.MIN_VALUE, Number.MAX_VALUE] as const;
 
-export const determineSupportedPlaybackRateValues = (window: null | (Window & typeof globalThis)) => {
+export const determineSupportedPlaybackRateValues = (window: ReturnType<typeof createWindow>): readonly [number, number] => {
     if (window === null) {
         return DEFAULT_VALUES;
     }
