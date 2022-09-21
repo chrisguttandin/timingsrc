@@ -300,7 +300,9 @@ describe('updateGradually()', () => {
             });
 
             it('should return an unchanged position and velocity', () => {
-                expect(updateGradually(timingStateVector, 5)).to.deep.equal(timingStateVector);
+                expect(updateGradually(timingStateVector, 5)).to.deep.equal({ position: 2, velocity: 'a fake velocity' });
+
+                expect(computeVelocity).to.have.been.calledOnce.and.calledWithExactly(0, minimumValue, maximumValue, velocity);
             });
         });
 
@@ -352,7 +354,9 @@ describe('updateGradually()', () => {
             });
 
             it('should return an unchanged position and velocity', () => {
-                expect(updateGradually(timingStateVector, 5)).to.deep.equal(timingStateVector);
+                expect(updateGradually(timingStateVector, 5)).to.deep.equal({ position: 8, velocity: 'a fake velocity' });
+
+                expect(computeVelocity).to.have.been.calledOnce.and.calledWithExactly(0, minimumValue, maximumValue, velocity);
             });
         });
     });
