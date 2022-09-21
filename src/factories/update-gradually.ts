@@ -1,4 +1,5 @@
 import type { determineSupportedPlaybackRateValues } from '../functions/determine-supported-playback-rate-values';
+import { IUpdateVector } from '../interfaces';
 import { TUpdateFunction } from '../types';
 import type { createComputeVelocity } from './compute-velocity';
 
@@ -7,7 +8,7 @@ export const createUpdateGradually = (
     [minValue, maxValue]: ReturnType<typeof determineSupportedPlaybackRateValues>,
     threshold: number,
     tolerance: number
-): TUpdateFunction => {
+): TUpdateFunction<IUpdateVector> => {
     let lastPosition: null | number = null;
     let mediaElementDelay = 0;
 

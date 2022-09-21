@@ -1,5 +1,6 @@
 import type { TAnimationFrameFunction, TOnFunction } from 'subscribable-things';
 import type { ITimingObject } from 'timing-object';
+import { IUpdateVector } from '../interfaces';
 import { TPrepareTimingStateVectorFunction, TUpdateFunction } from '../types';
 import type { createUpdateMediaElement } from './update-media-element';
 
@@ -9,20 +10,26 @@ export const createSetTimingsrcWithCustomUpdateFunction = (
     on: TOnFunction,
     updateMediaElement: ReturnType<typeof createUpdateMediaElement>
 ) => {
-    return (
+    return <UpdateVectorWithCustomState extends IUpdateVector>(
         mediaElement: HTMLMediaElement,
         timingObject: ITimingObject,
-        updateFunction: TUpdateFunction,
+        updateFunction: TUpdateFunction<UpdateVectorWithCustomState>,
         prepareTimingStateVector: null | TPrepareTimingStateVectorFunction = null
     ) => {
+        let previousUpdateVectorWithCustomState: null | UpdateVectorWithCustomState = null;
+
         const update = () => {
             const { currentTime, duration, playbackRate } = mediaElement;
             const timingStateVector = timingObject.query();
-            const { position, velocity } = updateFunction(
+
+            previousUpdateVectorWithCustomState = updateFunction(
                 prepareTimingStateVector === null ? timingStateVector : prepareTimingStateVector(timingStateVector),
-                currentTime
+                currentTime,
+                previousUpdateVectorWithCustomState
             );
+
             const sanitizedDuration = typeof duration === 'number' && !isNaN(duration) ? duration : 0;
+            const { position, velocity } = previousUpdateVectorWithCustomState;
 
             updateMediaElement(currentTime, sanitizedDuration, mediaElement, playbackRate, position, velocity);
         };

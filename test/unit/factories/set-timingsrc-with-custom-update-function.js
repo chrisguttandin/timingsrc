@@ -115,7 +115,17 @@ describe('setTimingsrcWithCustomUpdateFunction()', () => {
                 it('should call updateFunction()', () => {
                     next();
 
-                    expect(updateFunction).to.have.been.calledOnce.and.calledWithExactly(timingStateVector, mediaElement.currentTime);
+                    expect(updateFunction).to.have.been.calledOnce.and.calledWithExactly(timingStateVector, mediaElement.currentTime, null);
+                });
+
+                it('should call updateFunction() with the return value of the previous invocation', () => {
+                    next();
+                    next();
+
+                    expect(updateFunction).to.have.been.calledTwice.and.calledWithExactly(timingStateVector, mediaElement.currentTime, {
+                        position,
+                        velocity
+                    });
                 });
 
                 describe('with an undefined duration', () => {
@@ -212,7 +222,19 @@ describe('setTimingsrcWithCustomUpdateFunction()', () => {
 
                     expect(updateFunction).to.have.been.calledOnce.and.calledWithExactly(
                         preparedTimingStateVector,
-                        mediaElement.currentTime
+                        mediaElement.currentTime,
+                        null
+                    );
+                });
+
+                it('should call updateFunction() with the return value of the previous invocation', () => {
+                    next();
+                    next();
+
+                    expect(updateFunction).to.have.been.calledTwice.and.calledWithExactly(
+                        preparedTimingStateVector,
+                        mediaElement.currentTime,
+                        { position, velocity }
                     );
                 });
 

@@ -1,8 +1,9 @@
 import type { TTranslateTimingStateVectorFunction } from 'timing-object';
+import { IUpdateVector } from '../interfaces';
 import { TUpdateFunction } from '../types';
 
 export const createUpdateStepwiseFactory = (translateTimingStateVector: TTranslateTimingStateVectorFunction) => {
-    return (tolerance: number): TUpdateFunction => {
+    return (tolerance: number): TUpdateFunction<IUpdateVector> => {
         let lastMotionUpdate: null | { position: number; timestamp: number; velocity: number } = null;
         let lastPlayheadDifference = 0;
         let mediaElementDelay = 0;
