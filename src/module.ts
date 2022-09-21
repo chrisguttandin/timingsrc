@@ -1,5 +1,6 @@
 import { animationFrame, on } from 'subscribable-things';
 import { translateTimingStateVector } from 'timing-object';
+import { createComputeVelocity } from './factories/compute-velocity';
 import { createDefaultSetTimingsrc } from './factories/default-set-timingsrc';
 import { createSetCurrentTime } from './factories/set-current-time';
 import { createSetPlaybackRate } from './factories/set-playback-rate';
@@ -29,6 +30,7 @@ export const setTimingsrcWithCustomUpdateFunction = createSetTimingsrcWithCustom
 );
 
 export const setTimingsrc = createDefaultSetTimingsrc(
+    createComputeVelocity,
     createSetTimingsrc,
     createUpdateGradually,
     createUpdateStepwise,

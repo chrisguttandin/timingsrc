@@ -1,21 +1,24 @@
 import { createUpdateGradually } from '../../../src/factories/update-gradually';
+import { stub } from 'sinon';
 
 describe('updateGradually()', () => {
+    let computeVelocity;
     let maximumValue;
     let minimumValue;
-    let timeConstant;
     let threshold;
     let tolerance;
     let updateGradually;
 
     beforeEach(() => {
+        computeVelocity = stub();
         maximumValue = 2;
         minimumValue = 0.2;
-        timeConstant = 1.5;
         threshold = 2;
         tolerance = 1;
 
-        updateGradually = createUpdateGradually([minimumValue, maximumValue], timeConstant, threshold, tolerance);
+        computeVelocity.returns('a fake velocity');
+
+        updateGradually = createUpdateGradually(computeVelocity, [minimumValue, maximumValue], threshold, tolerance);
     });
 
     describe('with a velocity below zero', () => {
@@ -301,7 +304,7 @@ describe('updateGradually()', () => {
             });
         });
 
-        describe('with a position below the tolerance that would result in a velocity below the minimum value', () => {
+        describe('with a position below the tolerance', () => {
             let timingStateVector;
 
             beforeEach(() => {
@@ -309,19 +312,9 @@ describe('updateGradually()', () => {
             });
 
             it('should return an updated position and velocity', () => {
-                expect(updateGradually(timingStateVector, 5)).to.deep.equal({ position: 5, velocity: minimumValue });
-            });
-        });
+                expect(updateGradually(timingStateVector, 5)).to.deep.equal({ position: 5, velocity: 'a fake velocity' });
 
-        describe('with a position below the tolerance', () => {
-            let timingStateVector;
-
-            beforeEach(() => {
-                timingStateVector = { position: 3.875, velocity };
-            });
-
-            it('should return an updated position and velocity', () => {
-                expect(updateGradually(timingStateVector, 5)).to.deep.equal({ position: 5, velocity: 3 / 12 });
+                expect(computeVelocity).to.have.been.calledOnce.and.calledWithExactly(2, minimumValue, maximumValue, velocity);
             });
         });
 
@@ -341,23 +334,13 @@ describe('updateGradually()', () => {
             let timingStateVector;
 
             beforeEach(() => {
-                timingStateVector = { position: 6.25, velocity };
-            });
-
-            it('should return an updated position and velocity', () => {
-                expect(updateGradually(timingStateVector, 5)).to.deep.equal({ position: 5, velocity: 11 / 6 });
-            });
-        });
-
-        describe('with a position above the tolerance that would result in a velocity above the maximum value', () => {
-            let timingStateVector;
-
-            beforeEach(() => {
                 timingStateVector = { position: 7, velocity };
             });
 
             it('should return an updated position and velocity', () => {
-                expect(updateGradually(timingStateVector, 5)).to.deep.equal({ position: 5, velocity: maximumValue });
+                expect(updateGradually(timingStateVector, 5)).to.deep.equal({ position: 5, velocity: 'a fake velocity' });
+
+                expect(computeVelocity).to.have.been.calledOnce.and.calledWithExactly(-2, minimumValue, maximumValue, velocity);
             });
         });
 
