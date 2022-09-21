@@ -1,10 +1,12 @@
+import { ITimingObject } from 'timing-object';
 import type { createSetTimingsrcWithCustomUpdateFunction } from '../factories/set-timingsrc-with-custom-update-function';
-import { TSetTimingsrcFunction, TUpdateFunction } from '../types';
+import { TPrepareTimingStateVectorFunction, TUpdateFunction } from '../types';
 
-export const createSetTimingsrc = (
-    setTimingsrcWithCustomUpdateFunction: ReturnType<typeof createSetTimingsrcWithCustomUpdateFunction>,
-    update: TUpdateFunction
-): TSetTimingsrcFunction => {
-    return (mediaElement, timingObject, prepareTimingStateVector = null) =>
+export const createSetTimingsrc =
+    (setTimingsrcWithCustomUpdateFunction: ReturnType<typeof createSetTimingsrcWithCustomUpdateFunction>, update: TUpdateFunction) =>
+    (
+        mediaElement: HTMLMediaElement,
+        timingObject: ITimingObject,
+        prepareTimingStateVector: null | TPrepareTimingStateVectorFunction = null
+    ) =>
         setTimingsrcWithCustomUpdateFunction(mediaElement, timingObject, update, prepareTimingStateVector);
-};
