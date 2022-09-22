@@ -13,6 +13,7 @@ import { createWindow } from './factories/window';
 import { determineSupportedPlaybackRateValues } from './functions/determine-supported-playback-rate-values';
 import { pause } from './functions/pause';
 import { play } from './functions/play';
+import { updateVectorWithNewPosition } from './functions/update-vector-with-new-position';
 
 export { createSetTimingsrc };
 
@@ -36,5 +37,6 @@ export const setTimingsrc = createDefaultSetTimingsrc(
     createUpdateStepwise,
     determineSupportedPlaybackRateValues,
     setTimingsrcWithCustomUpdateFunction,
+    updateVectorWithNewPosition,
     createWindow()
 );
