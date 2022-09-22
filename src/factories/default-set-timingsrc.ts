@@ -1,4 +1,5 @@
 import type { determineSupportedPlaybackRateValues as determineSupportedPlaybackRateValuesFunction } from '../functions/determine-supported-playback-rate-values';
+import { TUpdateFunction, TUpdateVectorWithCustomState } from '../types';
 import type { createComputeVelocity as createComputeVelocityFunction } from './compute-velocity';
 import type { createSetTimingsrc as createSetTimingsrcFunction } from './set-timingsrc';
 import type { createSetTimingsrcWithCustomUpdateFunction } from './set-timingsrc-with-custom-update-function';
@@ -18,9 +19,8 @@ export const createDefaultSetTimingsrc = (
     determineSupportedPlaybackRateValues: typeof determineSupportedPlaybackRateValuesFunction,
     setTimingsrcWithCustomUpdateFunction: ReturnType<typeof createSetTimingsrcWithCustomUpdateFunction>,
     window: ReturnType<typeof createWindow>
-) =>
-    createSetTimingsrc(
-        setTimingsrcWithCustomUpdateFunction,
+) => {
+    const update =
         window !== null && window.navigator.userAgent.includes('Safari') && !window.navigator.userAgent.includes('Chrome')
             ? createUpdateStepwise(DEFAULT_TOLERANCE)
             : createUpdateGradually(
@@ -28,5 +28,7 @@ export const createDefaultSetTimingsrc = (
                   determineSupportedPlaybackRateValues(window),
                   DEFAULT_THRESHOLD,
                   DEFAULT_TOLERANCE
-              )
-    );
+              );
+
+    return createSetTimingsrc(setTimingsrcWithCustomUpdateFunction, <TUpdateFunction<TUpdateVectorWithCustomState<typeof update>>>update);
+};
