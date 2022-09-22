@@ -193,15 +193,11 @@ describe('defaultSetTimingsrc()', () => {
     });
 
     describe('with the user agent string of Safari', () => {
-        let args;
-
         beforeEach(() => {
             window.navigator = {
                 userAgent:
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.1.1 Safari/605.1.15'
             };
-
-            args = ['a', 'fake', 'array', 'of', 'arguments'];
         });
 
         it('should call createUpdateStepwise with the default arguments', () => {
@@ -213,7 +209,7 @@ describe('defaultSetTimingsrc()', () => {
                 determineSupportedPlaybackRateValues,
                 setTimingsrcWithCustomUpdateFunction,
                 window
-            )(...args);
+            );
 
             expect(createUpdateStepwise).to.have.been.calledOnce.and.calledWithExactly(0.025);
         });
@@ -227,26 +223,12 @@ describe('defaultSetTimingsrc()', () => {
                 determineSupportedPlaybackRateValues,
                 setTimingsrcWithCustomUpdateFunction,
                 window
-            )(...args);
+            );
 
             expect(createSetTimingsrc).to.have.been.calledOnce.and.calledWithExactly(setTimingsrcWithCustomUpdateFunction, updateStepwise);
         });
 
-        it('should call setTimingsrc with the given arguments', () => {
-            createDefaultSetTimingsrc(
-                createComputeVelocity,
-                createSetTimingsrc,
-                createUpdateGradually,
-                createUpdateStepwise,
-                determineSupportedPlaybackRateValues,
-                setTimingsrcWithCustomUpdateFunction,
-                window
-            )(...args);
-
-            expect(setTimingsrc).to.have.been.calledOnce.and.calledWithExactly(...args);
-        });
-
-        it('should return the value returned by setTimingsrc', () => {
+        it('should return the value returned by createSetTimingsrc', () => {
             expect(
                 createDefaultSetTimingsrc(
                     createComputeVelocity,
@@ -256,8 +238,8 @@ describe('defaultSetTimingsrc()', () => {
                     determineSupportedPlaybackRateValues,
                     setTimingsrcWithCustomUpdateFunction,
                     window
-                )(...args)
-            ).to.equal(subscription);
+                )
+            ).to.equal(setTimingsrc);
         });
     });
 });
