@@ -32,20 +32,48 @@ export const createSetTimingsrcWithCustomUpdateFunction = (
             const { position, velocity } = previousUpdateVectorWithCustomState;
 
             updateMediaElement(currentTime, sanitizedDuration, mediaElement, playbackRate, position, velocity);
+
+            return velocity !== 0;
         };
 
-        const unsubscribeFunctions = [
-            animationFrame()(() => update()),
+        let unsubscribe: () => void;
+
+        const updateOnce = () => {
+            if (!update()) {
+                unsubscribe();
+
+                unsubscribe = updateReactively();
+            }
+        };
+        const updateConsistently = () => {
+            const unsubscribeFunctions = [
+                animationFrame()(() => updateOnce()),
+                on(
+                    timingObject,
+                    'change'
+                )(() => {
+                    if (document.visibilityState === 'hidden') {
+                        updateOnce();
+                    }
+                })
+            ];
+
+            return () => unsubscribeFunctions.forEach((unsubscribeFunction) => unsubscribeFunction());
+        };
+        const updateReactively = () =>
             on(
                 timingObject,
                 'change'
             )(() => {
-                if (document.visibilityState === 'hidden') {
-                    update();
-                }
-            })
-        ];
+                if (update()) {
+                    unsubscribe();
 
-        return () => unsubscribeFunctions.forEach((unsubscribe) => unsubscribe());
+                    unsubscribe = updateConsistently();
+                }
+            });
+
+        unsubscribe = update() ? updateConsistently() : updateReactively();
+
+        return () => unsubscribe();
     };
 };
