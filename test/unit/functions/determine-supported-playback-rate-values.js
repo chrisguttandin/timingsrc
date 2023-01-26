@@ -32,7 +32,7 @@ describe('determineSupportedPlaybackRateValues()', () => {
             });
 
             it('should return the values supported in Chrome', () => {
-                expect(determineSupportedPlaybackRateValues(window)).to.deep.equal([0.625, 16]);
+                expect(determineSupportedPlaybackRateValues(window)).to.deep.equal([0.0625, 16]);
 
                 expect(playbackRate).to.have.been.calledOnceWithExactly(17);
             });

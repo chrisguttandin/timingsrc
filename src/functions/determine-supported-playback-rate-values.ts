@@ -13,8 +13,8 @@ export const determineSupportedPlaybackRateValues = (window: ReturnType<typeof c
         // Bug #2: Chrome does not support values above 16.
         audio.playbackRate = 17;
     } catch {
-        // Bug #1: Chrome does not support values below 0.625.
-        return [0.625, 16] as const;
+        // Bug #1: Chrome does not support values below 0.0625.
+        return [0.0625, 16] as const;
     }
 
     try {
