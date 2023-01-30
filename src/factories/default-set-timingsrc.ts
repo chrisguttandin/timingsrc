@@ -1,5 +1,4 @@
 import type { determineSupportedPlaybackRateValues as determineSupportedPlaybackRateValuesFunction } from '../functions/determine-supported-playback-rate-values';
-import type { updateVectorWithNewPosition as updateVectorWithNewPositionFunction } from '../functions/update-vector-with-new-position';
 import { TUpdateFunction, TUpdateVectorWithCustomState } from '../types';
 import type { createComputeVelocity as createComputeVelocityFunction } from './compute-velocity';
 import type { createSetTimingsrc as createSetTimingsrcFunction } from './set-timingsrc';
@@ -19,7 +18,6 @@ export const createDefaultSetTimingsrc = (
     createUpdateStepwise: ReturnType<typeof createUpdateStepwiseFactory>,
     determineSupportedPlaybackRateValues: typeof determineSupportedPlaybackRateValuesFunction,
     setTimingsrcWithCustomUpdateFunction: ReturnType<typeof createSetTimingsrcWithCustomUpdateFunction>,
-    updateVectorWithNewPosition: typeof updateVectorWithNewPositionFunction,
     window: ReturnType<typeof createWindow>
 ) => {
     const update =
@@ -29,8 +27,7 @@ export const createDefaultSetTimingsrc = (
                   createComputeVelocity(DEFAULT_TIME_CONSTANT),
                   determineSupportedPlaybackRateValues(window),
                   DEFAULT_THRESHOLD,
-                  DEFAULT_TOLERANCE,
-                  updateVectorWithNewPosition
+                  DEFAULT_TOLERANCE
               );
 
     return createSetTimingsrc(setTimingsrcWithCustomUpdateFunction, <TUpdateFunction<TUpdateVectorWithCustomState<typeof update>>>update);

@@ -8,8 +8,6 @@ describe('updateGradually()', () => {
     let threshold;
     let tolerance;
     let updateGradually;
-    let updateVectorWithNewPosition;
-    let updateVelocity;
 
     beforeEach(() => {
         computeVelocity = stub();
@@ -17,22 +15,10 @@ describe('updateGradually()', () => {
         minimumValue = 0.2;
         threshold = 2;
         tolerance = 1;
-        updateVectorWithNewPosition = stub();
 
         computeVelocity.returns('a fake velocity');
-        updateVectorWithNewPosition.callsFake((...args) => {
-            updateVelocity = args[2];
 
-            return 'a fake update vector';
-        });
-
-        updateGradually = createUpdateGradually(
-            computeVelocity,
-            [minimumValue, maximumValue],
-            threshold,
-            tolerance,
-            updateVectorWithNewPosition
-        );
+        updateGradually = createUpdateGradually(computeVelocity, [minimumValue, maximumValue], threshold, tolerance);
     });
 
     describe('with a velocity below zero', () => {
@@ -313,14 +299,8 @@ describe('updateGradually()', () => {
                 timingStateVector = { position: 2, velocity };
             });
 
-            it('should return an update vector', () => {
-                expect(updateGradually(timingStateVector, 5, null)).to.deep.equal('a fake update vector');
-
-                expect(updateVectorWithNewPosition).to.have.been.calledOnce.and.calledWithExactly(0, 2, updateVelocity);
-
-                updateVelocity(2);
-
-                expect(computeVelocity).to.have.been.calledOnce.and.calledWithExactly(0, minimumValue, maximumValue, velocity);
+            it('should return an unchanged position and velocity', () => {
+                expect(updateGradually(timingStateVector, 5, null)).to.deep.equal({ ...timingStateVector, mediaElementDelay: 0 });
             });
         });
 
@@ -379,14 +359,8 @@ describe('updateGradually()', () => {
                 timingStateVector = { position: 8, velocity };
             });
 
-            it('should return an update vector', () => {
-                expect(updateGradually(timingStateVector, 5, null)).to.deep.equal('a fake update vector');
-
-                expect(updateVectorWithNewPosition).to.have.been.calledOnce.and.calledWithExactly(0, 8, updateVelocity);
-
-                updateVelocity(8);
-
-                expect(computeVelocity).to.have.been.calledOnce.and.calledWithExactly(0, minimumValue, maximumValue, velocity);
+            it('should return an unchanged position and velocity', () => {
+                expect(updateGradually(timingStateVector, 5, null)).to.deep.equal({ ...timingStateVector, mediaElementDelay: 0 });
             });
         });
     });

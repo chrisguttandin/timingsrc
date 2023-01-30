@@ -13,7 +13,6 @@ describe('defaultSetTimingsrc()', () => {
     let subscription;
     let updateGradually;
     let updateStepwise;
-    let updateVectorWithNewPosition;
     let window;
 
     beforeEach(() => {
@@ -28,7 +27,6 @@ describe('defaultSetTimingsrc()', () => {
         subscription = 'a fake subscription';
         updateGradually = 'a fake updateGradually() function';
         updateStepwise = 'a fake updateStepwise() function';
-        updateVectorWithNewPosition = 'a fake updateVectorWithNewPosition() function';
         window = {};
 
         createComputeVelocity.returns(computeVelocity);
@@ -55,7 +53,6 @@ describe('defaultSetTimingsrc()', () => {
                 createUpdateStepwise,
                 determineSupportedPlaybackRateValues,
                 setTimingsrcWithCustomUpdateFunction,
-                updateVectorWithNewPosition,
                 window
             );
 
@@ -70,7 +67,6 @@ describe('defaultSetTimingsrc()', () => {
                 createUpdateStepwise,
                 determineSupportedPlaybackRateValues,
                 setTimingsrcWithCustomUpdateFunction,
-                updateVectorWithNewPosition,
                 window
             );
 
@@ -85,17 +81,10 @@ describe('defaultSetTimingsrc()', () => {
                 createUpdateStepwise,
                 determineSupportedPlaybackRateValues,
                 setTimingsrcWithCustomUpdateFunction,
-                updateVectorWithNewPosition,
                 window
             );
 
-            expect(createUpdateGradually).to.have.been.calledOnce.and.calledWithExactly(
-                computeVelocity,
-                [0, Number.MAX_VALUE],
-                1,
-                0.025,
-                updateVectorWithNewPosition
-            );
+            expect(createUpdateGradually).to.have.been.calledOnce.and.calledWithExactly(computeVelocity, [0, Number.MAX_VALUE], 1, 0.025);
         });
 
         it('should call createSetTimingsrc internally with the function that applies gradual updates', () => {
@@ -106,7 +95,6 @@ describe('defaultSetTimingsrc()', () => {
                 createUpdateStepwise,
                 determineSupportedPlaybackRateValues,
                 setTimingsrcWithCustomUpdateFunction,
-                updateVectorWithNewPosition,
                 window
             );
 
@@ -122,7 +110,6 @@ describe('defaultSetTimingsrc()', () => {
                     createUpdateStepwise,
                     determineSupportedPlaybackRateValues,
                     setTimingsrcWithCustomUpdateFunction,
-                    updateVectorWithNewPosition,
                     window
                 )
             ).to.equal(setTimingsrc);
@@ -142,7 +129,6 @@ describe('defaultSetTimingsrc()', () => {
                 createUpdateStepwise,
                 determineSupportedPlaybackRateValues,
                 setTimingsrcWithCustomUpdateFunction,
-                updateVectorWithNewPosition,
                 window
             );
 
@@ -157,7 +143,6 @@ describe('defaultSetTimingsrc()', () => {
                 createUpdateStepwise,
                 determineSupportedPlaybackRateValues,
                 setTimingsrcWithCustomUpdateFunction,
-                updateVectorWithNewPosition,
                 window
             );
 
@@ -172,17 +157,10 @@ describe('defaultSetTimingsrc()', () => {
                 createUpdateStepwise,
                 determineSupportedPlaybackRateValues,
                 setTimingsrcWithCustomUpdateFunction,
-                updateVectorWithNewPosition,
                 window
             );
 
-            expect(createUpdateGradually).to.have.been.calledOnce.and.calledWithExactly(
-                computeVelocity,
-                [0, Number.MAX_VALUE],
-                1,
-                0.025,
-                updateVectorWithNewPosition
-            );
+            expect(createUpdateGradually).to.have.been.calledOnce.and.calledWithExactly(computeVelocity, [0, Number.MAX_VALUE], 1, 0.025);
         });
 
         it('should call createSetTimingsrc internally with the function that applies gradual updates', () => {
@@ -193,7 +171,6 @@ describe('defaultSetTimingsrc()', () => {
                 createUpdateStepwise,
                 determineSupportedPlaybackRateValues,
                 setTimingsrcWithCustomUpdateFunction,
-                updateVectorWithNewPosition,
                 window
             );
 
@@ -209,7 +186,6 @@ describe('defaultSetTimingsrc()', () => {
                     createUpdateStepwise,
                     determineSupportedPlaybackRateValues,
                     setTimingsrcWithCustomUpdateFunction,
-                    updateVectorWithNewPosition,
                     window
                 )
             ).to.equal(setTimingsrc);
@@ -232,7 +208,6 @@ describe('defaultSetTimingsrc()', () => {
                 createUpdateStepwise,
                 determineSupportedPlaybackRateValues,
                 setTimingsrcWithCustomUpdateFunction,
-                updateVectorWithNewPosition,
                 window
             );
 
@@ -247,7 +222,6 @@ describe('defaultSetTimingsrc()', () => {
                 createUpdateStepwise,
                 determineSupportedPlaybackRateValues,
                 setTimingsrcWithCustomUpdateFunction,
-                updateVectorWithNewPosition,
                 window
             );
 
@@ -263,7 +237,6 @@ describe('defaultSetTimingsrc()', () => {
                     createUpdateStepwise,
                     determineSupportedPlaybackRateValues,
                     setTimingsrcWithCustomUpdateFunction,
-                    updateVectorWithNewPosition,
                     window
                 )
             ).to.equal(setTimingsrc);
