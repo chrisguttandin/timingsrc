@@ -8,10 +8,10 @@ describe('computeVelocity()', () => {
 
     beforeEach(() => {
         maximumValue = 2;
-        minimumValue = 0.2;
+        minimumValue = 0.5;
         velocity = 1;
 
-        computeVelocity = createComputeVelocity(1.5);
+        computeVelocity = createComputeVelocity(0.5);
     });
 
     describe('with a delta and velocity that would result in a velocity below the minimum value', () => {
@@ -22,8 +22,14 @@ describe('computeVelocity()', () => {
 
     describe('with a delta and velocity that would result in a velocity within the supported range', () => {
         for (const [delta, result] of [
-            [1.125, 3 / 12],
-            [-1.25, 11 / 6]
+            [-0.4, 1.8],
+            [-0.2, 1.4],
+            [-0.125, 1.25],
+            [-0.1, 1.2],
+            [0.1, 1 / 1.2],
+            [0.125, 1 / 1.25],
+            [0.2, 1 / 1.4],
+            [0.4, 1 / 1.8]
         ]) {
             it('should return the computed velocity', () => {
                 expect(computeVelocity(delta, minimumValue, maximumValue, velocity)).to.equal(result);

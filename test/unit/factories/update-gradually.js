@@ -12,7 +12,7 @@ describe('updateGradually()', () => {
     beforeEach(() => {
         computeVelocity = stub();
         maximumValue = 2;
-        minimumValue = 0.2;
+        minimumValue = 0.5;
         threshold = 2;
         tolerance = 1;
 

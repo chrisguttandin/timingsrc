@@ -1,2 +1,5 @@
-export const createComputeVelocity = (timeConstant: number) => (delta: number, minValue: number, maxValue: number, velocity: number) =>
-    Math.max(minValue, Math.min(maxValue, ((timeConstant - delta) / timeConstant) * velocity));
+export const createComputeVelocity = (timeConstant: number) => (delta: number, minValue: number, maxValue: number, velocity: number) => {
+    const factor = (Math.abs(delta) + timeConstant) / timeConstant;
+
+    return Math.max(minValue, Math.min(maxValue, delta > 0 ? velocity / factor : factor * velocity));
+};
