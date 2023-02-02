@@ -92,7 +92,18 @@ module.exports = (config) => {
         });
     } else {
         config.set({
-            browsers: ['ChromeCanaryHeadless', 'ChromeHeadless']
+            browsers: ['ChromeCanaryHeadlessWithNoRequiredUserGesture', 'ChromeHeadlessWithNoRequiredUserGesture'],
+
+            customLaunchers: {
+                ChromeCanaryHeadlessWithNoRequiredUserGesture: {
+                    base: 'ChromeCanaryHeadless',
+                    flags: ['--autoplay-policy=no-user-gesture-required']
+                },
+                ChromeHeadlessWithNoRequiredUserGesture: {
+                    base: 'ChromeHeadless',
+                    flags: ['--autoplay-policy=no-user-gesture-required']
+                }
+            }
         });
     }
 };

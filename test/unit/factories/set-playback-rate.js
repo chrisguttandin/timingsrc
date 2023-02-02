@@ -3,9 +3,11 @@ import { stub } from 'sinon';
 
 describe('setPlaybackRate()', () => {
     let mediaElement;
+    let negativeMaximum;
     let playbackRateAssignments;
     let playbackRateSetter;
     let playbackRateValue;
+    let positiveMinimum;
     let setPlaybackRate;
 
     beforeEach(() => {
@@ -22,30 +24,78 @@ describe('setPlaybackRate()', () => {
                 }
             }
         });
+        negativeMaximum = 0.9;
         playbackRateAssignments = new WeakMap();
+        positiveMinimum = 1.1;
 
-        setPlaybackRate = createSetPlaybackRate(playbackRateAssignments);
+        setPlaybackRate = createSetPlaybackRate(negativeMaximum, playbackRateAssignments, positiveMinimum);
     });
 
     describe('without any previous assignment', () => {
-        let nextValue;
         let previousValue;
 
         beforeEach(() => {
-            nextValue = 0.8;
             previousValue = 0.9;
         });
 
-        it('should set the playbackRate to nextValue', () => {
-            setPlaybackRate(mediaElement, previousValue, nextValue);
+        describe('with a nextValue outside of the range of ignored values', () => {
+            let nextValue;
 
-            expect(playbackRateSetter).to.have.been.calledOnce.and.calledWithExactly(nextValue);
+            beforeEach(() => {
+                nextValue = 0.8;
+            });
+
+            it('should set the playbackRate to nextValue', () => {
+                setPlaybackRate(mediaElement, previousValue, nextValue);
+
+                expect(playbackRateSetter).to.have.been.calledOnce.and.calledWithExactly(nextValue);
+            });
+
+            it('should cache the playbackRate and nextValue', () => {
+                setPlaybackRate(mediaElement, previousValue, nextValue);
+
+                expect(playbackRateAssignments.get(mediaElement)).to.deep.equal([playbackRateValue, nextValue]);
+            });
         });
 
-        it('should cache the playbackRate and nextValue', () => {
-            setPlaybackRate(mediaElement, previousValue, nextValue);
+        describe('with a negative nextValue above the maximum negative value', () => {
+            let nextValue;
 
-            expect(playbackRateAssignments.get(mediaElement)).to.deep.equal([playbackRateValue, nextValue]);
+            beforeEach(() => {
+                nextValue = 0.95;
+            });
+
+            it('should set the playbackRate to the maximum negative value', () => {
+                setPlaybackRate(mediaElement, previousValue, nextValue);
+
+                expect(playbackRateSetter).to.have.been.calledOnce.and.calledWithExactly(negativeMaximum);
+            });
+
+            it('should cache the playbackRate and nextValue', () => {
+                setPlaybackRate(mediaElement, previousValue, nextValue);
+
+                expect(playbackRateAssignments.get(mediaElement)).to.deep.equal([playbackRateValue, nextValue]);
+            });
+        });
+
+        describe('with a positive nextValue below the minimum positive value', () => {
+            let nextValue;
+
+            beforeEach(() => {
+                nextValue = 1.05;
+            });
+
+            it('should set the playbackRate to the minimum positive value', () => {
+                setPlaybackRate(mediaElement, previousValue, nextValue);
+
+                expect(playbackRateSetter).to.have.been.calledOnce.and.calledWithExactly(positiveMinimum);
+            });
+
+            it('should cache the playbackRate and nextValue', () => {
+                setPlaybackRate(mediaElement, previousValue, nextValue);
+
+                expect(playbackRateAssignments.get(mediaElement)).to.deep.equal([playbackRateValue, nextValue]);
+            });
         });
     });
 

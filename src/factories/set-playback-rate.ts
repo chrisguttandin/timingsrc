@@ -1,4 +1,8 @@
-export const createSetPlaybackRate = (playbackRateAssignments: WeakMap<HTMLMediaElement, [number, number]>) => {
+export const createSetPlaybackRate = (
+    negativeMaximum: number,
+    playbackRateAssignments: WeakMap<HTMLMediaElement, [number, number]>,
+    positiveMinimum: number
+) => {
     return (mediaElement: HTMLMediaElement, previousValue: number, nextValue: number) => {
         const playbackRateAssignment = playbackRateAssignments.get(mediaElement);
 
@@ -7,8 +11,8 @@ export const createSetPlaybackRate = (playbackRateAssignments: WeakMap<HTMLMedia
             playbackRateAssignment[0] !== previousValue ||
             playbackRateAssignment[1] !== nextValue
         ) {
-            // There is currently a bug in Firefox which causes problems when switching back to a playbackRate of exactly 1.
-            mediaElement.playbackRate = nextValue === 1 ? (previousValue > 1 ? 1.00001 : 0.99999) : nextValue;
+            // Bug #6: Chrome does not adjust the tempo when the playbackRate is very close to 1.
+            mediaElement.playbackRate = nextValue > 1 ? Math.max(positiveMinimum, nextValue) : Math.min(negativeMaximum, nextValue);
 
             playbackRateAssignments.set(mediaElement, [mediaElement.playbackRate, nextValue]);
         }

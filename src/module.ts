@@ -20,7 +20,12 @@ export { createUpdateGradually };
 
 export const createUpdateStepwise = createUpdateStepwiseFactory(translateTimingStateVector);
 
-const updateMediaElement = createUpdateMediaElement(pause, play, createSetCurrentTime(new WeakMap()), createSetPlaybackRate(new WeakMap()));
+const updateMediaElement = createUpdateMediaElement(
+    pause,
+    play,
+    createSetCurrentTime(new WeakMap()),
+    createSetPlaybackRate(881 / 882, new WeakMap(), 882 / 881)
+);
 
 export const setTimingsrcWithCustomUpdateFunction = createSetTimingsrcWithCustomUpdateFunction(
     animationFrame,
