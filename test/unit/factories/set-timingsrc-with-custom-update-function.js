@@ -3,12 +3,15 @@ import { createSetTimingsrcWithCustomUpdateFunction } from '../../../src/factori
 
 describe('setTimingsrcWithCustomUpdateFunction()', () => {
     let animationFrame;
+    let clearInterval;
     let document;
+    let intervalId;
     let mediaElement;
     let on;
     let position;
     let prepareTimingStateVector;
     let preparedTimingStateVector;
+    let setInterval;
     let setTimingsrcWithCustomUpdateFunction;
     let subscribeToAnimationFrame;
     let subscribeToOn;
@@ -22,12 +25,15 @@ describe('setTimingsrcWithCustomUpdateFunction()', () => {
 
     beforeEach(() => {
         animationFrame = stub();
+        clearInterval = spy();
         document = { visibilityState: 'hidden' };
+        intervalId = 'a fake intervalId';
         mediaElement = { currentTime: 'a fake currentTime', playbackRate: 'a fake playbackRate' };
         on = stub();
         position = 'a fake position';
         prepareTimingStateVector = stub();
         preparedTimingStateVector = 'a fake preparedTimingStateVector';
+        setInterval = stub();
         subscribeToAnimationFrame = stub();
         subscribeToOn = stub();
         timingObject = { query: stub() };
@@ -41,12 +47,20 @@ describe('setTimingsrcWithCustomUpdateFunction()', () => {
         animationFrame.returns(subscribeToAnimationFrame);
         on.returns(subscribeToOn);
         prepareTimingStateVector.returns(preparedTimingStateVector);
+        setInterval.returns(intervalId);
         subscribeToAnimationFrame.returns(unsubscribeFromAnimationFrame);
         subscribeToOn.returns(unsubscribeFromOn);
         timingObject.query.returns(timingStateVector);
         updateFunction.returns({ position, velocity });
 
-        setTimingsrcWithCustomUpdateFunction = createSetTimingsrcWithCustomUpdateFunction(animationFrame, document, on, updateMediaElement);
+        setTimingsrcWithCustomUpdateFunction = createSetTimingsrcWithCustomUpdateFunction(
+            animationFrame,
+            clearInterval,
+            document,
+            on,
+            setInterval,
+            updateMediaElement
+        );
     });
 
     for (const withPrepareTimingStateVectorFunction of [true, false]) {
@@ -146,6 +160,12 @@ describe('setTimingsrcWithCustomUpdateFunction()', () => {
             describe('with a velocity of 0', () => {
                 beforeEach(() => {
                     updateFunction.returns({ position, velocity: 0 });
+                });
+
+                it('should not call setInterval', () => {
+                    setTimingsrcWithCustomUpdateFunction(...args);
+
+                    expect(setInterval).to.have.not.been.called;
                 });
 
                 it('should not call animationFrame', () => {
@@ -302,6 +322,16 @@ describe('setTimingsrcWithCustomUpdateFunction()', () => {
             });
 
             describe('with a velocity other than 0', () => {
+                it('should call setInterval', () => {
+                    setTimingsrcWithCustomUpdateFunction(...args);
+
+                    expect(setInterval).to.have.been.calledOnce;
+
+                    expect(setInterval.firstCall.args.length).to.equal(2);
+                    expect(setInterval.firstCall.args[0]).to.be.a('function');
+                    expect(setInterval.firstCall.args[1]).to.equal(100);
+                });
+
                 it('should call animationFrame without any arguments', () => {
                     setTimingsrcWithCustomUpdateFunction(...args);
 
@@ -332,6 +362,16 @@ describe('setTimingsrcWithCustomUpdateFunction()', () => {
                     expect(subscribeToOn.firstCall.args[0]).to.be.a('function');
                 });
 
+                it('should return a function that calls clearInterval', () => {
+                    const unsubscribe = setTimingsrcWithCustomUpdateFunction(...args);
+
+                    expect(clearInterval).to.have.not.been.called;
+
+                    unsubscribe();
+
+                    expect(clearInterval).to.have.been.calledOnce.and.calledWithExactly(intervalId);
+                });
+
                 it('should return a function that calls the function returned by the function returned by animationFrame', () => {
                     const unsubscribe = setTimingsrcWithCustomUpdateFunction(...args);
 
@@ -352,7 +392,7 @@ describe('setTimingsrcWithCustomUpdateFunction()', () => {
                     expect(unsubscribeFromOn).to.have.been.calledOnce.and.calledWithExactly();
                 });
 
-                for (const event of ['animationFrame', 'change event']) {
+                for (const event of ['animationFrame', 'change event', 'interval']) {
                     describe(`on a new ${event}`, () => {
                         let next;
                         let updateVector;
@@ -360,21 +400,63 @@ describe('setTimingsrcWithCustomUpdateFunction()', () => {
                         beforeEach(() => {
                             updateVector = { position: 'another fake position', velocity: 'another fake veloctiy' };
 
-                            (event === 'animationFrame' ? subscribeToAnimationFrame : subscribeToOn).callsFake((value) => {
+                            (event === 'animationFrame'
+                                ? subscribeToAnimationFrame
+                                : event === 'change event'
+                                ? subscribeToOn
+                                : setInterval
+                            ).callsFake((value) => {
                                 next = value;
 
-                                return event === 'animationFrame' ? unsubscribeFromAnimationFrame : unsubscribeFromOn;
+                                return event === 'animationFrame'
+                                    ? unsubscribeFromAnimationFrame
+                                    : event === 'change event'
+                                    ? unsubscribeFromOn
+                                    : intervalId;
                             });
 
                             setTimingsrcWithCustomUpdateFunction(...args);
 
                             prepareTimingStateVector.resetHistory();
+                            setInterval.resetHistory();
                             timingObject.query.resetHistory();
                             updateFunction.resetHistory();
                             updateMediaElement.resetHistory();
 
                             updateFunction.returns(updateVector);
                         });
+
+                        if (event === 'interval') {
+                            it('should not call clearInterval', () => {
+                                next();
+
+                                expect(clearInterval).to.have.not.been.called;
+                            });
+                        } else {
+                            it('should call clearInterval', () => {
+                                next();
+
+                                expect(clearInterval).to.have.been.calledOnce.and.calledWithExactly(intervalId);
+                            });
+                        }
+
+                        if (event === 'interval') {
+                            it('should not call setInterval', () => {
+                                next();
+
+                                expect(setInterval).to.have.not.been.called;
+                            });
+                        } else {
+                            it('should call setInterval', () => {
+                                next();
+
+                                expect(setInterval).to.have.been.calledOnce;
+
+                                expect(setInterval.firstCall.args.length).to.equal(2);
+                                expect(setInterval.firstCall.args[0]).to.be.a('function');
+                                expect(setInterval.firstCall.args[1]).to.equal(100);
+                            });
+                        }
 
                         it('should call query() on the given timingObject', () => {
                             next();

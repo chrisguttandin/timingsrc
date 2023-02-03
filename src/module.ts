@@ -29,8 +29,10 @@ const updateMediaElement = createUpdateMediaElement(
 
 export const setTimingsrcWithCustomUpdateFunction = createSetTimingsrcWithCustomUpdateFunction(
     animationFrame,
+    clearInterval,
     document,
     on,
+    setInterval,
     updateMediaElement
 );
 

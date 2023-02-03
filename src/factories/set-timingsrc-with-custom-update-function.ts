@@ -6,8 +6,10 @@ import type { createUpdateMediaElement } from './update-media-element';
 
 export const createSetTimingsrcWithCustomUpdateFunction = (
     animationFrame: TAnimationFrameFunction,
+    clearInterval: Window['clearInterval'],
     document: Document,
     on: TOnFunction,
+    setInterval: Window['setInterval'],
     updateMediaElement: ReturnType<typeof createUpdateMediaElement>
 ) => {
     return <UpdateVectorWithCustomState extends IUpdateVector>(
@@ -46,13 +48,25 @@ export const createSetTimingsrcWithCustomUpdateFunction = (
             }
         };
         const updateConsistently = () => {
+            let intervalId = setInterval(() => updateOnce(), 100);
+
+            const restartInterval = () => {
+                clearInterval(intervalId);
+
+                intervalId = setInterval(() => updateOnce(), 100);
+            };
             const unsubscribeFunctions = [
-                animationFrame()(() => updateOnce()),
+                () => clearInterval(intervalId),
+                animationFrame()(() => {
+                    restartInterval();
+                    updateOnce();
+                }),
                 on(
                     timingObject,
                     'change'
                 )(() => {
                     if (document.visibilityState === 'hidden') {
+                        restartInterval();
                         updateOnce();
                     }
                 })
