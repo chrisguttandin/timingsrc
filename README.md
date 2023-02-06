@@ -41,6 +41,17 @@ deleteTimingsrc();
 setTimingsrc(mediaElement, timingObject, ({ position, ...vector }) => ({ ...vector, position: position + 5 }));
 ```
 
+It can also be used to set a loop. But in this case it's important to also provide a second function which modifies the vector before it is used to update the media element.
+
+```js
+setTimingsrc(
+    mediaElement,
+    timingObject,
+    ({ position, ...vector }) => ({ ...vector, position: position % 5 }),
+    ({ position, ...vector }) => ({ ...vector, position: position % 5 })
+);
+```
+
 It is also possible to configure a custom version of the `setTimingsrc()` function. The following would build a `setTimingSrc()` function which does not include the fallback for stepwise updates which is necessary in Safari.
 
 ```js

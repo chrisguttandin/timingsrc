@@ -8,9 +8,10 @@ describe('setTimingsrcWithCustomUpdateFunction()', () => {
     let intervalId;
     let mediaElement;
     let on;
-    let position;
     let prepareTimingStateVector;
+    let prepareUpdateVector;
     let preparedTimingStateVector;
+    let preparedUpdateVector;
     let setInterval;
     let setTimingsrcWithCustomUpdateFunction;
     let subscribeToAnimationFrame;
@@ -21,7 +22,7 @@ describe('setTimingsrcWithCustomUpdateFunction()', () => {
     let unsubscribeFromOn;
     let updateFunction;
     let updateMediaElement;
-    let velocity;
+    let updateVector;
 
     beforeEach(() => {
         animationFrame = stub();
@@ -30,9 +31,10 @@ describe('setTimingsrcWithCustomUpdateFunction()', () => {
         intervalId = 'a fake intervalId';
         mediaElement = { currentTime: 'a fake currentTime', playbackRate: 'a fake playbackRate' };
         on = stub();
-        position = 'a fake position';
         prepareTimingStateVector = stub();
+        prepareUpdateVector = stub();
         preparedTimingStateVector = 'a fake preparedTimingStateVector';
+        preparedUpdateVector = { position: 'a prepared position', velocity: 'a prepared velocity' };
         setInterval = stub();
         subscribeToAnimationFrame = stub();
         subscribeToOn = stub();
@@ -41,17 +43,18 @@ describe('setTimingsrcWithCustomUpdateFunction()', () => {
         unsubscribeFromAnimationFrame = spy();
         unsubscribeFromOn = spy();
         updateFunction = stub();
+        updateVector = { position: 'a fake position', velocity: 'a fake velocity' };
         updateMediaElement = spy();
-        velocity = 'a fake velocity';
 
         animationFrame.returns(subscribeToAnimationFrame);
         on.returns(subscribeToOn);
         prepareTimingStateVector.returns(preparedTimingStateVector);
+        prepareUpdateVector.returns(preparedUpdateVector);
         setInterval.returns(intervalId);
         subscribeToAnimationFrame.returns(unsubscribeFromAnimationFrame);
         subscribeToOn.returns(unsubscribeFromOn);
         timingObject.query.returns(timingStateVector);
-        updateFunction.returns({ position, velocity });
+        updateFunction.returns(updateVector);
 
         setTimingsrcWithCustomUpdateFunction = createSetTimingsrcWithCustomUpdateFunction(
             animationFrame,
@@ -63,15 +66,26 @@ describe('setTimingsrcWithCustomUpdateFunction()', () => {
         );
     });
 
-    for (const withPrepareTimingStateVectorFunction of [true, false]) {
-        describe(`${withPrepareTimingStateVectorFunction ? 'with' : 'without'} a prepareTimingStateVector function`, () => {
+    for (const [withPrepareTimingStateVectorFunction, withPrepareUpdateVectorFunction] of [
+        [true, true],
+        [true, false],
+        [false, true],
+        [false, false]
+    ]) {
+        describe(`${withPrepareTimingStateVectorFunction ? 'with' : 'without'} a prepareTimingStateVector function and ${
+            withPrepareUpdateVectorFunction ? 'with' : 'without'
+        } a prepareUpdateVector function`, () => {
             let args;
 
             beforeEach(
                 () =>
                     (args = withPrepareTimingStateVectorFunction
-                        ? [mediaElement, timingObject, updateFunction, prepareTimingStateVector]
-                        : [mediaElement, timingObject, updateFunction])
+                        ? withPrepareUpdateVectorFunction
+                            ? [mediaElement, timingObject, updateFunction, prepareTimingStateVector, prepareUpdateVector]
+                            : [mediaElement, timingObject, updateFunction, prepareTimingStateVector, null]
+                        : withPrepareUpdateVectorFunction
+                        ? [mediaElement, timingObject, updateFunction, null, prepareUpdateVector]
+                        : [mediaElement, timingObject, updateFunction, null, null])
             );
 
             it('should call query() on the given timingObject', () => {
@@ -104,6 +118,20 @@ describe('setTimingsrcWithCustomUpdateFunction()', () => {
                 );
             });
 
+            if (withPrepareUpdateVectorFunction) {
+                it('should call prepareUpdateVector()', () => {
+                    setTimingsrcWithCustomUpdateFunction(...args);
+
+                    expect(prepareUpdateVector).to.have.been.calledOnce.and.calledWithExactly(updateVector);
+                });
+            } else {
+                it('should not call prepareUpdateVector()', () => {
+                    setTimingsrcWithCustomUpdateFunction(...args);
+
+                    expect(prepareUpdateVector).to.have.not.been.called;
+                });
+            }
+
             describe('with an undefined duration', () => {
                 it('should call updateMediaElement()', () => {
                     setTimingsrcWithCustomUpdateFunction(...args);
@@ -113,8 +141,8 @@ describe('setTimingsrcWithCustomUpdateFunction()', () => {
                         0,
                         mediaElement,
                         mediaElement.playbackRate,
-                        position,
-                        velocity
+                        withPrepareUpdateVectorFunction ? preparedUpdateVector.position : updateVector.position,
+                        withPrepareUpdateVectorFunction ? preparedUpdateVector.velocity : updateVector.velocity
                     );
                 });
             });
@@ -132,8 +160,8 @@ describe('setTimingsrcWithCustomUpdateFunction()', () => {
                         0,
                         mediaElement,
                         mediaElement.playbackRate,
-                        position,
-                        velocity
+                        withPrepareUpdateVectorFunction ? preparedUpdateVector.position : updateVector.position,
+                        withPrepareUpdateVectorFunction ? preparedUpdateVector.velocity : updateVector.velocity
                     );
                 });
             });
@@ -151,15 +179,19 @@ describe('setTimingsrcWithCustomUpdateFunction()', () => {
                         18,
                         mediaElement,
                         mediaElement.playbackRate,
-                        position,
-                        velocity
+                        withPrepareUpdateVectorFunction ? preparedUpdateVector.position : updateVector.position,
+                        withPrepareUpdateVectorFunction ? preparedUpdateVector.velocity : updateVector.velocity
                     );
                 });
             });
 
             describe('with a velocity of 0', () => {
                 beforeEach(() => {
-                    updateFunction.returns({ position, velocity: 0 });
+                    if (withPrepareUpdateVectorFunction) {
+                        prepareUpdateVector.returns({ ...preparedUpdateVector, velocity: 0 });
+                    } else {
+                        updateFunction.returns({ ...updateVector, velocity: 0 });
+                    }
                 });
 
                 it('should not call setInterval', () => {
@@ -201,10 +233,12 @@ describe('setTimingsrcWithCustomUpdateFunction()', () => {
 
                 describe('on a new change event', () => {
                     let next;
-                    let updateVector;
+                    let nextPreparedUpdateVector;
+                    let nextUpdateVector;
 
                     beforeEach(() => {
-                        updateVector = { position: 'another fake position', velocity: 'another fake veloctiy' };
+                        nextPreparedUpdateVector = { position: 'another prepated position', velocity: 'another prepated veloctiy' };
+                        nextUpdateVector = { position: 'another fake position', velocity: 'another fake veloctiy' };
 
                         subscribeToOn.callsFake((value) => {
                             next = value;
@@ -215,11 +249,13 @@ describe('setTimingsrcWithCustomUpdateFunction()', () => {
                         setTimingsrcWithCustomUpdateFunction(...args);
 
                         prepareTimingStateVector.resetHistory();
+                        prepareUpdateVector.resetHistory();
                         timingObject.query.resetHistory();
                         updateFunction.resetHistory();
                         updateMediaElement.resetHistory();
 
-                        updateFunction.returns(updateVector);
+                        prepareUpdateVector.returns(nextPreparedUpdateVector);
+                        updateFunction.returns(nextUpdateVector);
                     });
 
                     it('should call query() on the given timingObject', () => {
@@ -236,7 +272,7 @@ describe('setTimingsrcWithCustomUpdateFunction()', () => {
                         });
                     } else {
                         it('should not call prepareTimingStateVector()', () => {
-                            setTimingsrcWithCustomUpdateFunction(...args);
+                            next();
 
                             expect(prepareTimingStateVector).to.have.not.been.called;
                         });
@@ -248,10 +284,7 @@ describe('setTimingsrcWithCustomUpdateFunction()', () => {
                         expect(updateFunction).to.have.been.calledOnce.and.calledWithExactly(
                             withPrepareTimingStateVectorFunction ? preparedTimingStateVector : timingStateVector,
                             mediaElement.currentTime,
-                            {
-                                position,
-                                velocity: 0
-                            }
+                            { ...(withPrepareUpdateVectorFunction ? preparedUpdateVector : updateVector), velocity: 0 }
                         );
                     });
 
@@ -262,9 +295,23 @@ describe('setTimingsrcWithCustomUpdateFunction()', () => {
                         expect(updateFunction).to.have.been.calledTwice.and.calledWithExactly(
                             withPrepareTimingStateVectorFunction ? preparedTimingStateVector : timingStateVector,
                             mediaElement.currentTime,
-                            updateVector
+                            withPrepareUpdateVectorFunction ? nextPreparedUpdateVector : nextUpdateVector
                         );
                     });
+
+                    if (withPrepareUpdateVectorFunction) {
+                        it('should call prepareUpdateVector()', () => {
+                            next();
+
+                            expect(prepareUpdateVector).to.have.been.calledOnce.and.calledWithExactly(nextUpdateVector);
+                        });
+                    } else {
+                        it('should not call prepareUpdateVector()', () => {
+                            next();
+
+                            expect(prepareUpdateVector).to.have.not.been.called;
+                        });
+                    }
 
                     describe('with an undefined duration', () => {
                         it('should call updateMediaElement()', () => {
@@ -275,8 +322,8 @@ describe('setTimingsrcWithCustomUpdateFunction()', () => {
                                 0,
                                 mediaElement,
                                 mediaElement.playbackRate,
-                                updateVector.position,
-                                updateVector.velocity
+                                withPrepareUpdateVectorFunction ? nextPreparedUpdateVector.position : nextUpdateVector.position,
+                                withPrepareUpdateVectorFunction ? nextPreparedUpdateVector.velocity : nextUpdateVector.velocity
                             );
                         });
                     });
@@ -294,8 +341,8 @@ describe('setTimingsrcWithCustomUpdateFunction()', () => {
                                 0,
                                 mediaElement,
                                 mediaElement.playbackRate,
-                                updateVector.position,
-                                updateVector.velocity
+                                withPrepareUpdateVectorFunction ? nextPreparedUpdateVector.position : nextUpdateVector.position,
+                                withPrepareUpdateVectorFunction ? nextPreparedUpdateVector.velocity : nextUpdateVector.velocity
                             );
                         });
                     });
@@ -313,8 +360,8 @@ describe('setTimingsrcWithCustomUpdateFunction()', () => {
                                 18,
                                 mediaElement,
                                 mediaElement.playbackRate,
-                                updateVector.position,
-                                updateVector.velocity
+                                withPrepareUpdateVectorFunction ? nextPreparedUpdateVector.position : nextUpdateVector.position,
+                                withPrepareUpdateVectorFunction ? nextPreparedUpdateVector.velocity : nextUpdateVector.velocity
                             );
                         });
                     });
@@ -395,10 +442,12 @@ describe('setTimingsrcWithCustomUpdateFunction()', () => {
                 for (const event of ['animationFrame', 'change event', 'interval']) {
                     describe(`on a new ${event}`, () => {
                         let next;
-                        let updateVector;
+                        let nextPreparedUpdateVector;
+                        let nextUpdateVector;
 
                         beforeEach(() => {
-                            updateVector = { position: 'another fake position', velocity: 'another fake veloctiy' };
+                            nextPreparedUpdateVector = { position: 'another prepated position', velocity: 'another prepated veloctiy' };
+                            nextUpdateVector = { position: 'another fake position', velocity: 'another fake veloctiy' };
 
                             (event === 'animationFrame'
                                 ? subscribeToAnimationFrame
@@ -418,12 +467,14 @@ describe('setTimingsrcWithCustomUpdateFunction()', () => {
                             setTimingsrcWithCustomUpdateFunction(...args);
 
                             prepareTimingStateVector.resetHistory();
+                            prepareUpdateVector.resetHistory();
                             setInterval.resetHistory();
                             timingObject.query.resetHistory();
                             updateFunction.resetHistory();
                             updateMediaElement.resetHistory();
 
-                            updateFunction.returns(updateVector);
+                            prepareUpdateVector.returns(nextPreparedUpdateVector);
+                            updateFunction.returns(nextUpdateVector);
                         });
 
                         if (event === 'interval') {
@@ -472,7 +523,7 @@ describe('setTimingsrcWithCustomUpdateFunction()', () => {
                             });
                         } else {
                             it('should not call prepareTimingStateVector()', () => {
-                                setTimingsrcWithCustomUpdateFunction(...args);
+                                next();
 
                                 expect(prepareTimingStateVector).to.have.not.been.called;
                             });
@@ -484,10 +535,7 @@ describe('setTimingsrcWithCustomUpdateFunction()', () => {
                             expect(updateFunction).to.have.been.calledOnce.and.calledWithExactly(
                                 withPrepareTimingStateVectorFunction ? preparedTimingStateVector : timingStateVector,
                                 mediaElement.currentTime,
-                                {
-                                    position,
-                                    velocity
-                                }
+                                withPrepareUpdateVectorFunction ? preparedUpdateVector : updateVector
                             );
                         });
 
@@ -498,9 +546,23 @@ describe('setTimingsrcWithCustomUpdateFunction()', () => {
                             expect(updateFunction).to.have.been.calledTwice.and.calledWithExactly(
                                 withPrepareTimingStateVectorFunction ? preparedTimingStateVector : timingStateVector,
                                 mediaElement.currentTime,
-                                updateVector
+                                withPrepareUpdateVectorFunction ? nextPreparedUpdateVector : nextUpdateVector
                             );
                         });
+
+                        if (withPrepareUpdateVectorFunction) {
+                            it('should call prepareUpdateVector()', () => {
+                                next();
+
+                                expect(prepareUpdateVector).to.have.been.calledOnce.and.calledWithExactly(nextUpdateVector);
+                            });
+                        } else {
+                            it('should not call prepareUpdateVector()', () => {
+                                next();
+
+                                expect(prepareUpdateVector).to.have.not.been.called;
+                            });
+                        }
 
                         describe('with an undefined duration', () => {
                             it('should call updateMediaElement()', () => {
@@ -511,8 +573,8 @@ describe('setTimingsrcWithCustomUpdateFunction()', () => {
                                     0,
                                     mediaElement,
                                     mediaElement.playbackRate,
-                                    updateVector.position,
-                                    updateVector.velocity
+                                    withPrepareUpdateVectorFunction ? nextPreparedUpdateVector.position : nextUpdateVector.position,
+                                    withPrepareUpdateVectorFunction ? nextPreparedUpdateVector.velocity : nextUpdateVector.velocity
                                 );
                             });
                         });
@@ -530,8 +592,8 @@ describe('setTimingsrcWithCustomUpdateFunction()', () => {
                                     0,
                                     mediaElement,
                                     mediaElement.playbackRate,
-                                    updateVector.position,
-                                    updateVector.velocity
+                                    withPrepareUpdateVectorFunction ? nextPreparedUpdateVector.position : nextUpdateVector.position,
+                                    withPrepareUpdateVectorFunction ? nextPreparedUpdateVector.velocity : nextUpdateVector.velocity
                                 );
                             });
                         });
@@ -549,8 +611,8 @@ describe('setTimingsrcWithCustomUpdateFunction()', () => {
                                     18,
                                     mediaElement,
                                     mediaElement.playbackRate,
-                                    updateVector.position,
-                                    updateVector.velocity
+                                    withPrepareUpdateVectorFunction ? nextPreparedUpdateVector.position : nextUpdateVector.position,
+                                    withPrepareUpdateVectorFunction ? nextPreparedUpdateVector.velocity : nextUpdateVector.velocity
                                 );
                             });
                         });

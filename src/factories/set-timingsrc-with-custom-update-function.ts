@@ -1,7 +1,7 @@
 import type { TAnimationFrameFunction, TOnFunction } from 'subscribable-things';
 import type { ITimingObject } from 'timing-object';
 import { IUpdateVector } from '../interfaces';
-import { TPrepareTimingStateVectorFunction, TUpdateFunction } from '../types';
+import { TPrepareTimingStateVectorFunction, TPrepareUpdateVectorFunction, TUpdateFunction } from '../types';
 import type { createUpdateMediaElement } from './update-media-element';
 
 export const createSetTimingsrcWithCustomUpdateFunction = (
@@ -16,7 +16,8 @@ export const createSetTimingsrcWithCustomUpdateFunction = (
         mediaElement: HTMLMediaElement,
         timingObject: ITimingObject,
         updateFunction: TUpdateFunction<UpdateVectorWithCustomState>,
-        prepareTimingStateVector: null | TPrepareTimingStateVectorFunction = null
+        prepareTimingStateVector: null | TPrepareTimingStateVectorFunction = null,
+        prepareUpdateVector: null | TPrepareUpdateVectorFunction = null
     ) => {
         let previousUpdateVectorWithCustomState: null | UpdateVectorWithCustomState = null;
 
@@ -31,7 +32,12 @@ export const createSetTimingsrcWithCustomUpdateFunction = (
             );
 
             const sanitizedDuration = typeof duration === 'number' && !isNaN(duration) ? duration : 0;
-            const { position, velocity } = previousUpdateVectorWithCustomState;
+            const { position, velocity } =
+                prepareUpdateVector === null
+                    ? previousUpdateVectorWithCustomState
+                    : prepareUpdateVector(previousUpdateVectorWithCustomState);
+
+            previousUpdateVectorWithCustomState = { ...previousUpdateVectorWithCustomState, position, velocity };
 
             updateMediaElement(currentTime, sanitizedDuration, mediaElement, playbackRate, position, velocity);
 
