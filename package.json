@@ -11,7 +11,7 @@
     "dependencies": {
         "@babel/runtime": "^7.21.5",
         "subscribable-things": "^2.1.15",
-        "timing-object": "^3.1.55",
+        "timing-object": "^3.1.56",
         "tslib": "^2.5.0"
     },
     "description": "A library to synchronize a MediaElement with a TimingObject.",
