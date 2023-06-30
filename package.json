@@ -9,7 +9,7 @@
         }
     },
     "dependencies": {
-        "@babel/runtime": "^7.22.3",
+        "@babel/runtime": "^7.22.5",
         "subscribable-things": "^2.1.18",
         "timing-object": "^3.1.58",
         "tslib": "^2.5.2"
