@@ -16,7 +16,7 @@
     },
     "description": "A library to synchronize a MediaElement with a TimingObject.",
     "devDependencies": {
-        "@babel/core": "^7.22.20",
+        "@babel/core": "^7.23.3",
         "@babel/plugin-external-helpers": "^7.22.5",
         "@babel/plugin-transform-runtime": "^7.22.15",
         "@babel/preset-env": "^7.22.20",
