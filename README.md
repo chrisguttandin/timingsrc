@@ -6,7 +6,7 @@
 
 This libary is meant to synchronize a [`MediaElement`](https://html.spec.whatwg.org/multipage/media.html#htmlmediaelement) (aka an `<audio/>` or `<video/>` element) with a [`TimingObject`](https://webtiming.github.io/timingobject/#dfn-timing-object).
 
-The [Timing Object specification](https://webtiming.github.io/timingobject/) defines an extension of the `MediaElement` which would add [`timingsrc`](https://webtiming.github.io/timingobject/#dom-htmlmediaelement-timingsrc) property. But so far this is not supported in any browser. Therefore this package can be used as a replacement as it provides the same functionality. But instead of patching the native protoypes this libary provides a function which can be used without modifying any built-in browser objects.
+The [Timing Object specification](https://webtiming.github.io/timingobject/) defines an extension of the `MediaElement` which would add a [`timingsrc`](https://webtiming.github.io/timingobject/#dom-htmlmediaelement-timingsrc) property. But so far this is not supported in any browser. Therefore this package can be used as a replacement as it provides the same functionality. But instead of patching the native protoypes this libary provides a function which can be used without modifying any built-in browser objects.
 
 The code of this library is heavily inspired by the [`mediaSync()`](https://github.com/webtiming/timingsrc/blob/master/v1/mediasync/mediasync.js#L89) function that came with v1 of the [timingsrc](https://github.com/webtiming/timingsrc) library. However all the code has been completely rewritten in TypeScript with the goal to make it more testable and easier to reason about.
 
