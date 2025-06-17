@@ -1,4 +1,4 @@
-import { createBlobWithOneSecondSine } from '../../helpers/create-blob-with-one-second-sine';
+import { createBlobWithOneSecondSine } from '../../../helpers/create-blob-with-one-second-sine';
 
 describe('MediaElement', () => {
     let audioElement;

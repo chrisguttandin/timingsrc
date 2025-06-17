@@ -73,10 +73,12 @@
         "lint:test": "eslint --config config/eslint/test.json --ext .js --report-unused-disable-directives test/",
         "prepare": "husky",
         "prepublishOnly": "npm run build",
-        "test": "npm run lint && npm run build && npm run test:expectation-chrome && npm run test:expectation-firefox && npm run test:expectation-safari && npm run test:integration && npm run test:unit",
+        "test": "npm run lint && npm run build && npm run test:expectation-chrome && npm run test:expectation-firefox && npm run test:expectation-safari && npm run test:expectation-safari-penultimate && npm run test:expectation-safari-previous && npm run test:integration && npm run test:unit",
         "test:expectation-chrome": "if [ \"$TYPE\" = \"\" -o \"$TYPE\" = \"expectation\" ] && [ \"$TARGET\" = \"\" -o \"$TARGET\" = \"chrome\" ]; then karma start config/karma/config-expectation-chrome.js --single-run; fi",
         "test:expectation-firefox": "if [ \"$TYPE\" = \"\" -o \"$TYPE\" = \"expectation\" ] && [ \"$TARGET\" = \"\" -o \"$TARGET\" = \"firefox\" ]; then karma start config/karma/config-expectation-firefox.js --single-run; fi",
         "test:expectation-safari": "if [ \"$TYPE\" = \"\" -o \"$TYPE\" = \"expectation\" ] && [ \"$TARGET\" = \"\" -o \"$TARGET\" = \"safari\" ]; then karma start config/karma/config-expectation-safari.js --single-run; fi",
+        "test:expectation-safari-penultimate": "if [ \"$TYPE\" = \"\" -o \"$TYPE\" = \"expectation\" ] && [ \"$TARGET\" = \"\" -o \"$TARGET\" = \"safari-penultimate\" ]; then karma start config/karma/config-expectation-safari-penultimate.js --single-run; fi",
+        "test:expectation-safari-previous": "if [ \"$TYPE\" = \"\" -o \"$TYPE\" = \"expectation\" ] && [ \"$TARGET\" = \"\" -o \"$TARGET\" = \"safari-previous\" ]; then karma start config/karma/config-expectation-safari-previous.js --single-run; fi",
         "test:integration": "if [ \"$TYPE\" = \"\" -o \"$TYPE\" = \"integration\" ]; then karma start config/karma/config-integration.js --single-run; fi",
         "test:unit": "if [ \"$TYPE\" = \"\" -o \"$TYPE\" = \"unit\" ]; then karma start config/karma/config-unit.js --single-run; fi"
     },
