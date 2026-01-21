@@ -15,27 +15,6 @@ describe('MediaElement', () => {
     });
 
     describe('currentTime', () => {
-        // bug #4
-
-        // This test doesn't not pass when running on BrowserStack since there is no way to disable the autoplay policy.
-        // eslint-disable-next-line no-undef
-        if (!process.env.CI) {
-            it('should not increase monotonically', (done) => {
-                let currentTime = audioElement.currentTime;
-
-                const interval = setInterval(() => {
-                    if (currentTime - 0.01 > audioElement.currentTime) {
-                        clearInterval(interval);
-                        done();
-                    } else {
-                        currentTime = audioElement.currentTime;
-                    }
-                });
-
-                audioElement.play();
-            });
-        }
-
         // bug #5
 
         it('should limit the precision after a while', (done) => {
