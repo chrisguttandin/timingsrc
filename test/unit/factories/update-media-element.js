@@ -1,3 +1,4 @@
+import { beforeEach, describe, expect, it } from 'vitest';
 import { createUpdateMediaElement } from '../../../src/factories/update-media-element';
 import { spy } from 'sinon';
 

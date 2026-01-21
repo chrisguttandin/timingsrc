@@ -1,3 +1,4 @@
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { createBlobWithOneSecondSine } from '../../../helpers/create-blob-with-one-second-sine';
 
 describe('MediaElement', () => {
@@ -17,21 +18,25 @@ describe('MediaElement', () => {
     describe('currentTime', () => {
         // bug #5
 
-        it('should limit the precision after a while', (done) => {
-            audioElement.oncanplaythrough = () => {
-                audioElement.currentTime = 0.4003200000000007;
-                audioElement.oncanplaythrough = null;
-
-                expect(audioElement.currentTime).to.equal(0.4003200000000007);
-
-                setTimeout(() => {
-                    expect(audioElement.currentTime).to.equal(0.40032);
-
-                    done();
-                }, 100);
-            };
-
+        it('should limit the precision after a while', () => {
             audioElement.load();
+
+            return new Promise((resolve) => {
+                audioElement.oncanplaythrough = () => {
+                    audioElement.oncanplaythrough = null;
+
+                    audioElement.currentTime = 0.4003200000000007;
+                    audioElement.oncanplaythrough = null;
+
+                    expect(audioElement.currentTime).to.equal(0.4003200000000007);
+
+                    setTimeout(() => {
+                        expect(audioElement.currentTime).to.equal(0.40032);
+
+                        resolve();
+                    }, 100);
+                };
+            });
         });
     });
 });

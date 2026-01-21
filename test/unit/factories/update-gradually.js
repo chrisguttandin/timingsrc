@@ -1,3 +1,4 @@
+import { beforeEach, describe, expect, it } from 'vitest';
 import { createUpdateGradually } from '../../../src/factories/update-gradually';
 import { stub } from 'sinon';
 

@@ -1,3 +1,4 @@
+import { beforeEach, describe, expect, it } from 'vitest';
 import { determineSupportedPlaybackRateValues } from '../../../src/functions/determine-supported-playback-rate-values';
 import { stub } from 'sinon';
 

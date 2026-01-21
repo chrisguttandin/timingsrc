@@ -1,3 +1,4 @@
+import { beforeEach, describe, expect, it } from 'vitest';
 import { spy, stub } from 'sinon';
 import { createSetTimingsrcWithCustomUpdateFunction } from '../../../src/factories/set-timingsrc-with-custom-update-function';
 
@@ -84,8 +85,8 @@ describe('setTimingsrcWithCustomUpdateFunction()', () => {
                             ? [mediaElement, timingObject, updateFunction, prepareTimingStateVector, prepareUpdateVector]
                             : [mediaElement, timingObject, updateFunction, prepareTimingStateVector, null]
                         : withPrepareUpdateVectorFunction
-                        ? [mediaElement, timingObject, updateFunction, null, prepareUpdateVector]
-                        : [mediaElement, timingObject, updateFunction, null, null])
+                          ? [mediaElement, timingObject, updateFunction, null, prepareUpdateVector]
+                          : [mediaElement, timingObject, updateFunction, null, null])
             );
 
             it('should call query() on the given timingObject', () => {
@@ -452,16 +453,16 @@ describe('setTimingsrcWithCustomUpdateFunction()', () => {
                             (event === 'animationFrame'
                                 ? subscribeToAnimationFrame
                                 : event === 'change event'
-                                ? subscribeToOn
-                                : setInterval
+                                  ? subscribeToOn
+                                  : setInterval
                             ).callsFake((value) => {
                                 next = value;
 
                                 return event === 'animationFrame'
                                     ? unsubscribeFromAnimationFrame
                                     : event === 'change event'
-                                    ? unsubscribeFromOn
-                                    : intervalId;
+                                      ? unsubscribeFromOn
+                                      : intervalId;
                             });
 
                             setTimingsrcWithCustomUpdateFunction(...args);

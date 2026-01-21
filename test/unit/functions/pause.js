@@ -1,3 +1,4 @@
+import { beforeEach, describe, expect, it } from 'vitest';
 import { pause } from '../../../src/functions/pause';
 import { spy } from 'sinon';
 

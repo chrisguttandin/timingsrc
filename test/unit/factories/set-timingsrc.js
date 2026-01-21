@@ -1,3 +1,4 @@
+import { beforeEach, describe, expect, it } from 'vitest';
 import { createSetTimingsrc } from '../../../src/factories/set-timingsrc';
 import { stub } from 'sinon';
 

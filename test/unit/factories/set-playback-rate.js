@@ -1,3 +1,4 @@
+import { beforeEach, describe, expect, it } from 'vitest';
 import { createSetPlaybackRate } from '../../../src/factories/set-playback-rate';
 import { stub } from 'sinon';
 
