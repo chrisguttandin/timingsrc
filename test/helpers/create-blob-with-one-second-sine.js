@@ -27,7 +27,7 @@ export const createBlobWithOneSecondSine = async () => {
 
     let offset = headerSize;
 
-    for (let i = 0; i < length; i += 1) {
+    for (let i = 0; i < sampleRate; i += 1) {
         const value = channelDataArray[i];
 
         dataView.setInt16(offset, value < 0 ? Math.max(-1, value) * 32768 : Math.min(1, value) * 32767, true);
