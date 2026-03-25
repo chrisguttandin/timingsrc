@@ -1,15 +1,14 @@
-import { beforeEach, describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { play } from '../../../src/functions/play';
-import { stub } from 'sinon';
 
 describe('play()', () => {
     describe('with a paused media element', () => {
         let mediaElement;
 
         beforeEach(() => {
-            mediaElement = { paused: true, play: stub() };
+            mediaElement = { paused: true, play: vi.fn() };
 
-            mediaElement.play.resolves();
+            mediaElement.play.mockResolvedValue();
         });
 
         it('should call play() on the given media element', () => {
@@ -23,9 +22,9 @@ describe('play()', () => {
         let mediaElement;
 
         beforeEach(() => {
-            mediaElement = { paused: false, play: stub() };
+            mediaElement = { paused: false, play: vi.fn() };
 
-            mediaElement.play.resolves();
+            mediaElement.play.mockResolvedValue();
         });
 
         it('should not call play() on the given media element', () => {

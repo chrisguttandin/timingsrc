@@ -1,6 +1,5 @@
-import { beforeEach, describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { createUpdateMediaElement } from '../../../src/factories/update-media-element';
-import { spy } from 'sinon';
 
 describe('updateMediaElement()', () => {
     let currentTime;
@@ -14,10 +13,10 @@ describe('updateMediaElement()', () => {
     let updateMediaElement;
 
     beforeEach(() => {
-        pause = spy();
-        play = spy();
-        setCurrentTime = spy();
-        setPlaybackRate = spy();
+        pause = vi.fn();
+        play = vi.fn();
+        setCurrentTime = vi.fn();
+        setPlaybackRate = vi.fn();
 
         updateMediaElement = createUpdateMediaElement(pause, play, setCurrentTime, setPlaybackRate);
 
@@ -82,7 +81,7 @@ describe('updateMediaElement()', () => {
             it('should set the playbackRate', () => {
                 updateMediaElement(currentTime, duration, mediaElement, playbackRate, position, velocity);
 
-                expect(setPlaybackRate).to.have.been.calledOnce.and.calledWithExactly(mediaElement, playbackRate, velocity);
+                expect(setPlaybackRate).to.have.been.calledOnce.and.calledWith(mediaElement, playbackRate, velocity);
             });
 
             it('should not call pause()', () => {
@@ -94,7 +93,7 @@ describe('updateMediaElement()', () => {
             it('should call play()', () => {
                 updateMediaElement(currentTime, duration, mediaElement, playbackRate, position, velocity);
 
-                expect(play).to.have.been.calledOnce.and.calledWithExactly(mediaElement);
+                expect(play).to.have.been.calledOnce.and.calledWith(mediaElement);
             });
         });
 
@@ -120,7 +119,7 @@ describe('updateMediaElement()', () => {
             it('should call pause()', () => {
                 updateMediaElement(currentTime, duration, mediaElement, playbackRate, position, velocity);
 
-                expect(pause).to.have.been.calledOnce.and.calledWithExactly(mediaElement);
+                expect(pause).to.have.been.calledOnce.and.calledWith(mediaElement);
             });
 
             it('should not call play()', () => {
@@ -161,7 +160,7 @@ describe('updateMediaElement()', () => {
             it('should call pause()', () => {
                 updateMediaElement(currentTime, duration, mediaElement, playbackRate, position, velocity);
 
-                expect(pause).to.have.been.calledOnce.and.calledWithExactly(mediaElement);
+                expect(pause).to.have.been.calledOnce.and.calledWith(mediaElement);
             });
 
             it('should not call play()', () => {
@@ -193,7 +192,7 @@ describe('updateMediaElement()', () => {
             it('should call pause()', () => {
                 updateMediaElement(currentTime, duration, mediaElement, playbackRate, position, velocity);
 
-                expect(pause).to.have.been.calledOnce.and.calledWithExactly(mediaElement);
+                expect(pause).to.have.been.calledOnce.and.calledWith(mediaElement);
             });
 
             it('should not call play()', () => {
@@ -225,7 +224,7 @@ describe('updateMediaElement()', () => {
             it('should call pause()', () => {
                 updateMediaElement(currentTime, duration, mediaElement, playbackRate, position, velocity);
 
-                expect(pause).to.have.been.calledOnce.and.calledWithExactly(mediaElement);
+                expect(pause).to.have.been.calledOnce.and.calledWith(mediaElement);
             });
 
             it('should not call play()', () => {
@@ -266,7 +265,7 @@ describe('updateMediaElement()', () => {
                 it('should set the currentTime to 0', () => {
                     updateMediaElement(currentTime, duration, mediaElement, playbackRate, position, velocity);
 
-                    expect(setCurrentTime).to.have.been.calledOnce.and.calledWithExactly(mediaElement, currentTime, 0);
+                    expect(setCurrentTime).to.have.been.calledOnce.and.calledWith(mediaElement, currentTime, 0);
                 });
             });
 
@@ -279,7 +278,7 @@ describe('updateMediaElement()', () => {
             it('should call pause()', () => {
                 updateMediaElement(currentTime, duration, mediaElement, playbackRate, position, velocity);
 
-                expect(pause).to.have.been.calledOnce.and.calledWithExactly(mediaElement);
+                expect(pause).to.have.been.calledOnce.and.calledWith(mediaElement);
             });
 
             it('should not call play()', () => {
@@ -312,7 +311,7 @@ describe('updateMediaElement()', () => {
                 it('should set the currentTime to 0', () => {
                     updateMediaElement(currentTime, duration, mediaElement, playbackRate, position, velocity);
 
-                    expect(setCurrentTime).to.have.been.calledOnce.and.calledWithExactly(mediaElement, currentTime, 0);
+                    expect(setCurrentTime).to.have.been.calledOnce.and.calledWith(mediaElement, currentTime, 0);
                 });
             });
 
@@ -325,7 +324,7 @@ describe('updateMediaElement()', () => {
             it('should call pause()', () => {
                 updateMediaElement(currentTime, duration, mediaElement, playbackRate, position, velocity);
 
-                expect(pause).to.have.been.calledOnce.and.calledWithExactly(mediaElement);
+                expect(pause).to.have.been.calledOnce.and.calledWith(mediaElement);
             });
 
             it('should not call play()', () => {
@@ -358,7 +357,7 @@ describe('updateMediaElement()', () => {
                 it('should set the currentTime to 0', () => {
                     updateMediaElement(currentTime, duration, mediaElement, playbackRate, position, velocity);
 
-                    expect(setCurrentTime).to.have.been.calledOnce.and.calledWithExactly(mediaElement, currentTime, 0);
+                    expect(setCurrentTime).to.have.been.calledOnce.and.calledWith(mediaElement, currentTime, 0);
                 });
             });
 
@@ -371,7 +370,7 @@ describe('updateMediaElement()', () => {
             it('should call pause()', () => {
                 updateMediaElement(currentTime, duration, mediaElement, playbackRate, position, velocity);
 
-                expect(pause).to.have.been.calledOnce.and.calledWithExactly(mediaElement);
+                expect(pause).to.have.been.calledOnce.and.calledWith(mediaElement);
             });
 
             it('should not call play()', () => {
@@ -399,7 +398,7 @@ describe('updateMediaElement()', () => {
             it('should set the currentTime', () => {
                 updateMediaElement(currentTime, duration, mediaElement, playbackRate, position, velocity);
 
-                expect(setCurrentTime).to.have.been.calledOnce.and.calledWithExactly(mediaElement, currentTime, position);
+                expect(setCurrentTime).to.have.been.calledOnce.and.calledWith(mediaElement, currentTime, position);
             });
 
             it('should not set the playbackRate', () => {
@@ -417,7 +416,7 @@ describe('updateMediaElement()', () => {
             it('should call play()', () => {
                 updateMediaElement(currentTime, duration, mediaElement, playbackRate, position, velocity);
 
-                expect(play).to.have.been.calledOnce.and.calledWithExactly(mediaElement);
+                expect(play).to.have.been.calledOnce.and.calledWith(mediaElement);
             });
         });
 
@@ -431,13 +430,13 @@ describe('updateMediaElement()', () => {
             it('should set the currentTime', () => {
                 updateMediaElement(currentTime, duration, mediaElement, playbackRate, position, velocity);
 
-                expect(setCurrentTime).to.have.been.calledOnce.and.calledWithExactly(mediaElement, currentTime, position);
+                expect(setCurrentTime).to.have.been.calledOnce.and.calledWith(mediaElement, currentTime, position);
             });
 
             it('should set the playbackRate', () => {
                 updateMediaElement(currentTime, duration, mediaElement, playbackRate, position, velocity);
 
-                expect(setPlaybackRate).to.have.been.calledOnce.and.calledWithExactly(mediaElement, playbackRate, velocity);
+                expect(setPlaybackRate).to.have.been.calledOnce.and.calledWith(mediaElement, playbackRate, velocity);
             });
 
             it('should not call pause()', () => {
@@ -449,7 +448,7 @@ describe('updateMediaElement()', () => {
             it('should call play()', () => {
                 updateMediaElement(currentTime, duration, mediaElement, playbackRate, position, velocity);
 
-                expect(play).to.have.been.calledOnce.and.calledWithExactly(mediaElement);
+                expect(play).to.have.been.calledOnce.and.calledWith(mediaElement);
             });
         });
 
@@ -463,7 +462,7 @@ describe('updateMediaElement()', () => {
             it('should set the currentTime', () => {
                 updateMediaElement(currentTime, duration, mediaElement, playbackRate, position, velocity);
 
-                expect(setCurrentTime).to.have.been.calledOnce.and.calledWithExactly(mediaElement, currentTime, position);
+                expect(setCurrentTime).to.have.been.calledOnce.and.calledWith(mediaElement, currentTime, position);
             });
 
             it('should not set the playbackRate', () => {
@@ -475,7 +474,7 @@ describe('updateMediaElement()', () => {
             it('should call pause()', () => {
                 updateMediaElement(currentTime, duration, mediaElement, playbackRate, position, velocity);
 
-                expect(pause).to.have.been.calledOnce.and.calledWithExactly(mediaElement);
+                expect(pause).to.have.been.calledOnce.and.calledWith(mediaElement);
             });
 
             it('should not call play()', () => {
@@ -516,7 +515,7 @@ describe('updateMediaElement()', () => {
                 it('should set the currentTime to the duration', () => {
                     updateMediaElement(currentTime, duration, mediaElement, playbackRate, position, velocity);
 
-                    expect(setCurrentTime).to.have.been.calledOnce.and.calledWithExactly(mediaElement, currentTime, duration);
+                    expect(setCurrentTime).to.have.been.calledOnce.and.calledWith(mediaElement, currentTime, duration);
                 });
             });
 
@@ -529,7 +528,7 @@ describe('updateMediaElement()', () => {
             it('should call pause()', () => {
                 updateMediaElement(currentTime, duration, mediaElement, playbackRate, position, velocity);
 
-                expect(pause).to.have.been.calledOnce.and.calledWithExactly(mediaElement);
+                expect(pause).to.have.been.calledOnce.and.calledWith(mediaElement);
             });
 
             it('should not call play()', () => {
@@ -562,7 +561,7 @@ describe('updateMediaElement()', () => {
                 it('should set the currentTime to the duration', () => {
                     updateMediaElement(currentTime, duration, mediaElement, playbackRate, position, velocity);
 
-                    expect(setCurrentTime).to.have.been.calledOnce.and.calledWithExactly(mediaElement, currentTime, duration);
+                    expect(setCurrentTime).to.have.been.calledOnce.and.calledWith(mediaElement, currentTime, duration);
                 });
             });
 
@@ -575,7 +574,7 @@ describe('updateMediaElement()', () => {
             it('should call pause()', () => {
                 updateMediaElement(currentTime, duration, mediaElement, playbackRate, position, velocity);
 
-                expect(pause).to.have.been.calledOnce.and.calledWithExactly(mediaElement);
+                expect(pause).to.have.been.calledOnce.and.calledWith(mediaElement);
             });
 
             it('should not call play()', () => {
@@ -608,7 +607,7 @@ describe('updateMediaElement()', () => {
                 it('should set the currentTime to the duration', () => {
                     updateMediaElement(currentTime, duration, mediaElement, playbackRate, position, velocity);
 
-                    expect(setCurrentTime).to.have.been.calledOnce.and.calledWithExactly(mediaElement, currentTime, duration);
+                    expect(setCurrentTime).to.have.been.calledOnce.and.calledWith(mediaElement, currentTime, duration);
                 });
             });
 
@@ -621,7 +620,7 @@ describe('updateMediaElement()', () => {
             it('should call pause()', () => {
                 updateMediaElement(currentTime, duration, mediaElement, playbackRate, position, velocity);
 
-                expect(pause).to.have.been.calledOnce.and.calledWithExactly(mediaElement);
+                expect(pause).to.have.been.calledOnce.and.calledWith(mediaElement);
             });
 
             it('should not call play()', () => {

@@ -1,5 +1,4 @@
-import { beforeEach, describe, expect, it } from 'vitest';
-import { spy, stub } from 'sinon';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { createDefaultSetTimingsrc } from '../../../src/factories/default-set-timingsrc';
 
 describe('defaultSetTimingsrc()', () => {
@@ -18,24 +17,24 @@ describe('defaultSetTimingsrc()', () => {
 
     beforeEach(() => {
         computeVelocity = 'a fake computeVelocity() function';
-        createComputeVelocity = stub();
-        createSetTimingsrc = stub();
-        createUpdateGradually = stub();
-        createUpdateStepwise = stub();
-        determineSupportedPlaybackRateValues = stub();
-        setTimingsrc = stub();
-        setTimingsrcWithCustomUpdateFunction = spy();
+        createComputeVelocity = vi.fn();
+        createSetTimingsrc = vi.fn();
+        createUpdateGradually = vi.fn();
+        createUpdateStepwise = vi.fn();
+        determineSupportedPlaybackRateValues = vi.fn();
+        setTimingsrc = vi.fn();
+        setTimingsrcWithCustomUpdateFunction = vi.fn();
         subscription = 'a fake subscription';
         updateGradually = 'a fake updateGradually() function';
         updateStepwise = 'a fake updateStepwise() function';
         window = {};
 
-        createComputeVelocity.returns(computeVelocity);
-        createSetTimingsrc.returns(setTimingsrc);
-        createUpdateGradually.returns(updateGradually);
-        createUpdateStepwise.returns(updateStepwise);
-        determineSupportedPlaybackRateValues.returns([0, Number.MAX_VALUE]);
-        setTimingsrc.returns(subscription);
+        createComputeVelocity.mockReturnValue(computeVelocity);
+        createSetTimingsrc.mockReturnValue(setTimingsrc);
+        createUpdateGradually.mockReturnValue(updateGradually);
+        createUpdateStepwise.mockReturnValue(updateStepwise);
+        determineSupportedPlaybackRateValues.mockReturnValue([0, Number.MAX_VALUE]);
+        setTimingsrc.mockReturnValue(subscription);
     });
 
     describe('with the user agent string of Chrome', () => {
@@ -57,7 +56,7 @@ describe('defaultSetTimingsrc()', () => {
                 window
             );
 
-            expect(createComputeVelocity).to.have.been.calledOnce.and.calledWithExactly(0.5);
+            expect(createComputeVelocity).to.have.been.calledOnce.and.calledWith(0.5);
         });
 
         it('should call determineSupportedPlaybackRateValues internally with the window object', () => {
@@ -71,7 +70,7 @@ describe('defaultSetTimingsrc()', () => {
                 window
             );
 
-            expect(determineSupportedPlaybackRateValues).to.have.been.calledOnce.and.calledWithExactly(window);
+            expect(determineSupportedPlaybackRateValues).to.have.been.calledOnce.and.calledWith(window);
         });
 
         it('should call createUpdateGradually with the default arguments', () => {
@@ -85,7 +84,7 @@ describe('defaultSetTimingsrc()', () => {
                 window
             );
 
-            expect(createUpdateGradually).to.have.been.calledOnce.and.calledWithExactly(computeVelocity, [0, Number.MAX_VALUE], 1, 0.025);
+            expect(createUpdateGradually).to.have.been.calledOnce.and.calledWith(computeVelocity, [0, Number.MAX_VALUE], 1, 0.025);
         });
 
         it('should call createSetTimingsrc internally with the function that applies gradual updates', () => {
@@ -99,7 +98,7 @@ describe('defaultSetTimingsrc()', () => {
                 window
             );
 
-            expect(createSetTimingsrc).to.have.been.calledOnce.and.calledWithExactly(setTimingsrcWithCustomUpdateFunction, updateGradually);
+            expect(createSetTimingsrc).to.have.been.calledOnce.and.calledWith(setTimingsrcWithCustomUpdateFunction, updateGradually);
         });
 
         it('should return the value returned by createSetTimingsrc', () => {
@@ -133,7 +132,7 @@ describe('defaultSetTimingsrc()', () => {
                 window
             );
 
-            expect(createComputeVelocity).to.have.been.calledOnce.and.calledWithExactly(0.5);
+            expect(createComputeVelocity).to.have.been.calledOnce.and.calledWith(0.5);
         });
 
         it('should call determineSupportedPlaybackRateValues internally with the window object', () => {
@@ -147,7 +146,7 @@ describe('defaultSetTimingsrc()', () => {
                 window
             );
 
-            expect(determineSupportedPlaybackRateValues).to.have.been.calledOnce.and.calledWithExactly(window);
+            expect(determineSupportedPlaybackRateValues).to.have.been.calledOnce.and.calledWith(window);
         });
 
         it('should call createUpdateGradually with the default arguments', () => {
@@ -161,7 +160,7 @@ describe('defaultSetTimingsrc()', () => {
                 window
             );
 
-            expect(createUpdateGradually).to.have.been.calledOnce.and.calledWithExactly(computeVelocity, [0, Number.MAX_VALUE], 1, 0.025);
+            expect(createUpdateGradually).to.have.been.calledOnce.and.calledWith(computeVelocity, [0, Number.MAX_VALUE], 1, 0.025);
         });
 
         it('should call createSetTimingsrc internally with the function that applies gradual updates', () => {
@@ -175,7 +174,7 @@ describe('defaultSetTimingsrc()', () => {
                 window
             );
 
-            expect(createSetTimingsrc).to.have.been.calledOnce.and.calledWithExactly(setTimingsrcWithCustomUpdateFunction, updateGradually);
+            expect(createSetTimingsrc).to.have.been.calledOnce.and.calledWith(setTimingsrcWithCustomUpdateFunction, updateGradually);
         });
 
         it('should return the value returned by createSetTimingsrc', () => {
@@ -212,7 +211,7 @@ describe('defaultSetTimingsrc()', () => {
                 window
             );
 
-            expect(createUpdateStepwise).to.have.been.calledOnce.and.calledWithExactly(0.025);
+            expect(createUpdateStepwise).to.have.been.calledOnce.and.calledWith(0.025);
         });
 
         it('should call createSetTimingsrc internally with the function that applies stepwise updates', () => {
@@ -226,7 +225,7 @@ describe('defaultSetTimingsrc()', () => {
                 window
             );
 
-            expect(createSetTimingsrc).to.have.been.calledOnce.and.calledWithExactly(setTimingsrcWithCustomUpdateFunction, updateStepwise);
+            expect(createSetTimingsrc).to.have.been.calledOnce.and.calledWith(setTimingsrcWithCustomUpdateFunction, updateStepwise);
         });
 
         it('should return the value returned by createSetTimingsrc', () => {

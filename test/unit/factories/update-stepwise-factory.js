@@ -1,6 +1,5 @@
-import { beforeEach, describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { createUpdateStepwiseFactory } from '../../../src/factories/update-stepwise-factory';
-import { stub } from 'sinon';
 
 describe('updateStepwise()', () => {
     let defaultCustomState;
@@ -19,7 +18,7 @@ describe('updateStepwise()', () => {
             numberOfExpectedResets: 1
         };
         tolerance = 1;
-        translateTimingStateVector = stub();
+        translateTimingStateVector = vi.fn();
 
         updateStepwise = createUpdateStepwiseFactory(translateTimingStateVector)(tolerance);
     });

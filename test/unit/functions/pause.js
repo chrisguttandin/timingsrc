@@ -1,13 +1,12 @@
-import { beforeEach, describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { pause } from '../../../src/functions/pause';
-import { spy } from 'sinon';
 
 describe('pause()', () => {
     describe('with a paused media element', () => {
         let mediaElement;
 
         beforeEach(() => {
-            mediaElement = { pause: spy(), paused: true };
+            mediaElement = { pause: vi.fn(), paused: true };
         });
 
         it('should not call pause() on the given media element', () => {
@@ -21,7 +20,7 @@ describe('pause()', () => {
         let mediaElement;
 
         beforeEach(() => {
-            mediaElement = { pause: spy(), paused: false };
+            mediaElement = { pause: vi.fn(), paused: false };
         });
 
         it('should call pause() on the given media element', () => {

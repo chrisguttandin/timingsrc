@@ -1,6 +1,5 @@
-import { beforeEach, describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { createSetPlaybackRate } from '../../../src/factories/set-playback-rate';
-import { stub } from 'sinon';
 
 describe('setPlaybackRate()', () => {
     let mediaElement;
@@ -12,7 +11,7 @@ describe('setPlaybackRate()', () => {
     let setPlaybackRate;
 
     beforeEach(() => {
-        playbackRateSetter = stub();
+        playbackRateSetter = vi.fn();
         mediaElement = Object.create(null, {
             playbackRate: {
                 get() {
@@ -49,7 +48,7 @@ describe('setPlaybackRate()', () => {
             it('should set the playbackRate to nextValue', () => {
                 setPlaybackRate(mediaElement, previousValue, nextValue);
 
-                expect(playbackRateSetter).to.have.been.calledOnce.and.calledWithExactly(nextValue);
+                expect(playbackRateSetter).to.have.been.calledOnce.and.calledWith(nextValue);
             });
 
             it('should cache the playbackRate and nextValue', () => {
@@ -69,7 +68,7 @@ describe('setPlaybackRate()', () => {
             it('should set the playbackRate to the maximum negative value', () => {
                 setPlaybackRate(mediaElement, previousValue, nextValue);
 
-                expect(playbackRateSetter).to.have.been.calledOnce.and.calledWithExactly(negativeMaximum);
+                expect(playbackRateSetter).to.have.been.calledOnce.and.calledWith(negativeMaximum);
             });
 
             it('should cache the playbackRate and nextValue', () => {
@@ -89,7 +88,7 @@ describe('setPlaybackRate()', () => {
             it('should set the playbackRate to the minimum positive value', () => {
                 setPlaybackRate(mediaElement, previousValue, nextValue);
 
-                expect(playbackRateSetter).to.have.been.calledOnce.and.calledWithExactly(positiveMinimum);
+                expect(playbackRateSetter).to.have.been.calledOnce.and.calledWith(positiveMinimum);
             });
 
             it('should cache the playbackRate and nextValue', () => {
@@ -110,7 +109,7 @@ describe('setPlaybackRate()', () => {
 
             setPlaybackRate(mediaElement, previousValue, nextValue);
 
-            playbackRateSetter.reset();
+            playbackRateSetter.mockClear();
         });
 
         it('should not set the playbackRate', () => {
@@ -136,13 +135,13 @@ describe('setPlaybackRate()', () => {
 
             setPlaybackRate(mediaElement, previousValue, 1.2);
 
-            playbackRateSetter.reset();
+            playbackRateSetter.mockClear();
         });
 
         it('should set the playbackRate to nextValue', () => {
             setPlaybackRate(mediaElement, previousValue, nextValue);
 
-            expect(playbackRateSetter).to.have.been.calledOnce.and.calledWithExactly(nextValue);
+            expect(playbackRateSetter).to.have.been.calledOnce.and.calledWith(nextValue);
         });
 
         it('should cache the playbackRate and nextValue', () => {
@@ -162,13 +161,13 @@ describe('setPlaybackRate()', () => {
 
             setPlaybackRate(mediaElement, 1.1, nextValue);
 
-            playbackRateSetter.reset();
+            playbackRateSetter.mockClear();
         });
 
         it('should set the playbackRate to nextValue', () => {
             setPlaybackRate(mediaElement, previousValue, nextValue);
 
-            expect(playbackRateSetter).to.have.been.calledOnce.and.calledWithExactly(nextValue);
+            expect(playbackRateSetter).to.have.been.calledOnce.and.calledWith(nextValue);
         });
 
         it('should cache the playbackRate and nextValue', () => {

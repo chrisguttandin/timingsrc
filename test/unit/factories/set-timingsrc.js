@@ -1,6 +1,5 @@
-import { beforeEach, describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { createSetTimingsrc } from '../../../src/factories/set-timingsrc';
-import { stub } from 'sinon';
 
 describe('setTimingsrc()', () => {
     let mediaElement;
@@ -12,14 +11,14 @@ describe('setTimingsrc()', () => {
 
     beforeEach(() => {
         mediaElement = 'a fake MediaElement';
-        setTimingsrcWithCustomUpdateFunction = stub();
+        setTimingsrcWithCustomUpdateFunction = vi.fn();
         subscription = 'a fake subscription';
         timingObject = 'a fake TimingObject';
         update = 'a fake update() function';
 
         setTimingsrc = createSetTimingsrc(setTimingsrcWithCustomUpdateFunction, update);
 
-        setTimingsrcWithCustomUpdateFunction.returns(subscription);
+        setTimingsrcWithCustomUpdateFunction.mockReturnValue(subscription);
     });
 
     describe('with a provided prepareTimingStateVector function', () => {
@@ -33,7 +32,7 @@ describe('setTimingsrc()', () => {
             it('should call setTimingsrcWithCustomUpdateFunction internally with the function that applies updates', () => {
                 setTimingsrc(mediaElement, timingObject, prepareTimingStateVector);
 
-                expect(setTimingsrcWithCustomUpdateFunction).to.have.been.calledOnce.and.calledWithExactly(
+                expect(setTimingsrcWithCustomUpdateFunction).to.have.been.calledOnce.and.calledWith(
                     mediaElement,
                     timingObject,
                     update,
@@ -56,7 +55,7 @@ describe('setTimingsrc()', () => {
             it('should call setTimingsrcWithCustomUpdateFunction internally with the function that applies updates', () => {
                 setTimingsrc(mediaElement, timingObject, prepareTimingStateVector, prepareUpdateVector);
 
-                expect(setTimingsrcWithCustomUpdateFunction).to.have.been.calledOnce.and.calledWithExactly(
+                expect(setTimingsrcWithCustomUpdateFunction).to.have.been.calledOnce.and.calledWith(
                     mediaElement,
                     timingObject,
                     update,
@@ -75,7 +74,7 @@ describe('setTimingsrc()', () => {
         it('should call setTimingsrcWithCustomUpdateFunction internally with the function that applies updates', () => {
             setTimingsrc(mediaElement, timingObject);
 
-            expect(setTimingsrcWithCustomUpdateFunction).to.have.been.calledOnce.and.calledWithExactly(
+            expect(setTimingsrcWithCustomUpdateFunction).to.have.been.calledOnce.and.calledWith(
                 mediaElement,
                 timingObject,
                 update,

@@ -1,6 +1,5 @@
-import { beforeEach, describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { createUpdateGradually } from '../../../src/factories/update-gradually';
-import { stub } from 'sinon';
 
 describe('updateGradually()', () => {
     let computeVelocity;
@@ -11,13 +10,13 @@ describe('updateGradually()', () => {
     let updateGradually;
 
     beforeEach(() => {
-        computeVelocity = stub();
+        computeVelocity = vi.fn();
         maximumValue = 2;
         minimumValue = 0.5;
         threshold = 2;
         tolerance = 1;
 
-        computeVelocity.returns('a fake velocity');
+        computeVelocity.mockReturnValue('a fake velocity');
 
         updateGradually = createUpdateGradually(computeVelocity, [minimumValue, maximumValue], threshold, tolerance);
     });
@@ -319,7 +318,7 @@ describe('updateGradually()', () => {
                     velocity: 'a fake velocity'
                 });
 
-                expect(computeVelocity).to.have.been.calledOnce.and.calledWithExactly(2, minimumValue, maximumValue, velocity);
+                expect(computeVelocity).to.have.been.calledOnce.and.calledWith(2, minimumValue, maximumValue, velocity);
             });
         });
 
@@ -349,7 +348,7 @@ describe('updateGradually()', () => {
                     velocity: 'a fake velocity'
                 });
 
-                expect(computeVelocity).to.have.been.calledOnce.and.calledWithExactly(-2, minimumValue, maximumValue, velocity);
+                expect(computeVelocity).to.have.been.calledOnce.and.calledWith(-2, minimumValue, maximumValue, velocity);
             });
         });
 

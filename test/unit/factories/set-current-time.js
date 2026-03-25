@@ -1,6 +1,5 @@
-import { beforeEach, describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { createSetCurrentTime } from '../../../src/factories/set-current-time';
-import { stub } from 'sinon';
 
 describe('setCurrentTime()', () => {
     let currentTimeAssignments;
@@ -11,7 +10,7 @@ describe('setCurrentTime()', () => {
 
     beforeEach(() => {
         currentTimeAssignments = new WeakMap();
-        currentTimeSetter = stub();
+        currentTimeSetter = vi.fn();
         mediaElement = Object.create(null, {
             currentTime: {
                 get() {
@@ -40,7 +39,7 @@ describe('setCurrentTime()', () => {
         it('should set the currentTime to nextValue', () => {
             setCurrentTime(mediaElement, previousValue, nextValue);
 
-            expect(currentTimeSetter).to.have.been.calledOnce.and.calledWithExactly(nextValue);
+            expect(currentTimeSetter).to.have.been.calledOnce.and.calledWith(nextValue);
         });
 
         it('should cache the currentTime and nextValue', () => {
@@ -60,7 +59,7 @@ describe('setCurrentTime()', () => {
 
             setCurrentTime(mediaElement, previousValue, nextValue);
 
-            currentTimeSetter.reset();
+            currentTimeSetter.mockReset();
         });
 
         it('should not set the currentTime', () => {
@@ -86,13 +85,13 @@ describe('setCurrentTime()', () => {
 
             setCurrentTime(mediaElement, previousValue, 12);
 
-            currentTimeSetter.reset();
+            currentTimeSetter.mockReset();
         });
 
         it('should set the currentTime to nextValue', () => {
             setCurrentTime(mediaElement, previousValue, nextValue);
 
-            expect(currentTimeSetter).to.have.been.calledOnce.and.calledWithExactly(nextValue);
+            expect(currentTimeSetter).to.have.been.calledOnce.and.calledWith(nextValue);
         });
 
         it('should cache the currentTime and nextValue', () => {
@@ -112,13 +111,13 @@ describe('setCurrentTime()', () => {
 
             setCurrentTime(mediaElement, 14, nextValue);
 
-            currentTimeSetter.reset();
+            currentTimeSetter.mockReset();
         });
 
         it('should set the currentTime to nextValue', () => {
             setCurrentTime(mediaElement, previousValue, nextValue);
 
-            expect(currentTimeSetter).to.have.been.calledOnce.and.calledWithExactly(nextValue);
+            expect(currentTimeSetter).to.have.been.calledOnce.and.calledWith(nextValue);
         });
 
         it('should cache the currentTime and nextValue', () => {

@@ -1,5 +1,4 @@
-import { beforeEach, describe, expect, it } from 'vitest';
-import { spy, stub } from 'sinon';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { createSetTimingsrcWithCustomUpdateFunction } from '../../../src/factories/set-timingsrc-with-custom-update-function';
 
 describe('setTimingsrcWithCustomUpdateFunction()', () => {
@@ -26,36 +25,36 @@ describe('setTimingsrcWithCustomUpdateFunction()', () => {
     let updateVector;
 
     beforeEach(() => {
-        animationFrame = stub();
-        clearInterval = spy();
+        animationFrame = vi.fn();
+        clearInterval = vi.fn();
         document = { visibilityState: 'hidden' };
         intervalId = 'a fake intervalId';
         mediaElement = { currentTime: 'a fake currentTime', playbackRate: 'a fake playbackRate' };
-        on = stub();
-        prepareTimingStateVector = stub();
-        prepareUpdateVector = stub();
+        on = vi.fn();
+        prepareTimingStateVector = vi.fn();
+        prepareUpdateVector = vi.fn();
         preparedTimingStateVector = 'a fake preparedTimingStateVector';
         preparedUpdateVector = { position: 'a prepared position', velocity: 'a prepared velocity' };
-        setInterval = stub();
-        subscribeToAnimationFrame = stub();
-        subscribeToOn = stub();
-        timingObject = { query: stub() };
+        setInterval = vi.fn();
+        subscribeToAnimationFrame = vi.fn();
+        subscribeToOn = vi.fn();
+        timingObject = { query: vi.fn() };
         timingStateVector = 'a fake timingStateVector';
-        unsubscribeFromAnimationFrame = spy();
-        unsubscribeFromOn = spy();
-        updateFunction = stub();
+        unsubscribeFromAnimationFrame = vi.fn();
+        unsubscribeFromOn = vi.fn();
+        updateFunction = vi.fn();
         updateVector = { position: 'a fake position', velocity: 'a fake velocity' };
-        updateMediaElement = spy();
+        updateMediaElement = vi.fn();
 
-        animationFrame.returns(subscribeToAnimationFrame);
-        on.returns(subscribeToOn);
-        prepareTimingStateVector.returns(preparedTimingStateVector);
-        prepareUpdateVector.returns(preparedUpdateVector);
-        setInterval.returns(intervalId);
-        subscribeToAnimationFrame.returns(unsubscribeFromAnimationFrame);
-        subscribeToOn.returns(unsubscribeFromOn);
-        timingObject.query.returns(timingStateVector);
-        updateFunction.returns(updateVector);
+        animationFrame.mockReturnValue(subscribeToAnimationFrame);
+        on.mockReturnValue(subscribeToOn);
+        prepareTimingStateVector.mockReturnValue(preparedTimingStateVector);
+        prepareUpdateVector.mockReturnValue(preparedUpdateVector);
+        setInterval.mockReturnValue(intervalId);
+        subscribeToAnimationFrame.mockReturnValue(unsubscribeFromAnimationFrame);
+        subscribeToOn.mockReturnValue(unsubscribeFromOn);
+        timingObject.query.mockReturnValue(timingStateVector);
+        updateFunction.mockReturnValue(updateVector);
 
         setTimingsrcWithCustomUpdateFunction = createSetTimingsrcWithCustomUpdateFunction(
             animationFrame,
@@ -92,14 +91,14 @@ describe('setTimingsrcWithCustomUpdateFunction()', () => {
             it('should call query() on the given timingObject', () => {
                 setTimingsrcWithCustomUpdateFunction(...args);
 
-                expect(timingObject.query).to.have.been.calledOnce.and.calledWithExactly();
+                expect(timingObject.query).to.have.been.calledOnce.and.calledWith();
             });
 
             if (withPrepareTimingStateVectorFunction) {
                 it('should call prepareTimingStateVector()', () => {
                     setTimingsrcWithCustomUpdateFunction(...args);
 
-                    expect(prepareTimingStateVector).to.have.been.calledOnce.and.calledWithExactly(timingStateVector);
+                    expect(prepareTimingStateVector).to.have.been.calledOnce.and.calledWith(timingStateVector);
                 });
             } else {
                 it('should not call prepareTimingStateVector()', () => {
@@ -112,7 +111,7 @@ describe('setTimingsrcWithCustomUpdateFunction()', () => {
             it('should call updateFunction()', () => {
                 setTimingsrcWithCustomUpdateFunction(...args);
 
-                expect(updateFunction).to.have.been.calledOnce.and.calledWithExactly(
+                expect(updateFunction).to.have.been.calledOnce.and.calledWith(
                     withPrepareTimingStateVectorFunction ? preparedTimingStateVector : timingStateVector,
                     mediaElement.currentTime,
                     null
@@ -123,7 +122,7 @@ describe('setTimingsrcWithCustomUpdateFunction()', () => {
                 it('should call prepareUpdateVector()', () => {
                     setTimingsrcWithCustomUpdateFunction(...args);
 
-                    expect(prepareUpdateVector).to.have.been.calledOnce.and.calledWithExactly(updateVector);
+                    expect(prepareUpdateVector).to.have.been.calledOnce.and.calledWith(updateVector);
                 });
             } else {
                 it('should not call prepareUpdateVector()', () => {
@@ -137,7 +136,7 @@ describe('setTimingsrcWithCustomUpdateFunction()', () => {
                 it('should call updateMediaElement()', () => {
                     setTimingsrcWithCustomUpdateFunction(...args);
 
-                    expect(updateMediaElement).to.have.been.calledOnce.and.calledWithExactly(
+                    expect(updateMediaElement).to.have.been.calledOnce.and.calledWith(
                         mediaElement.currentTime,
                         0,
                         mediaElement,
@@ -156,7 +155,7 @@ describe('setTimingsrcWithCustomUpdateFunction()', () => {
                 it('should call updateMediaElement()', () => {
                     setTimingsrcWithCustomUpdateFunction(...args);
 
-                    expect(updateMediaElement).to.have.been.calledOnce.and.calledWithExactly(
+                    expect(updateMediaElement).to.have.been.calledOnce.and.calledWith(
                         mediaElement.currentTime,
                         0,
                         mediaElement,
@@ -175,7 +174,7 @@ describe('setTimingsrcWithCustomUpdateFunction()', () => {
                 it('should call updateMediaElement()', () => {
                     setTimingsrcWithCustomUpdateFunction(...args);
 
-                    expect(updateMediaElement).to.have.been.calledOnce.and.calledWithExactly(
+                    expect(updateMediaElement).to.have.been.calledOnce.and.calledWith(
                         mediaElement.currentTime,
                         18,
                         mediaElement,
@@ -189,9 +188,9 @@ describe('setTimingsrcWithCustomUpdateFunction()', () => {
             describe('with a velocity of 0', () => {
                 beforeEach(() => {
                     if (withPrepareUpdateVectorFunction) {
-                        prepareUpdateVector.returns({ ...preparedUpdateVector, velocity: 0 });
+                        prepareUpdateVector.mockReturnValue({ ...preparedUpdateVector, velocity: 0 });
                     } else {
-                        updateFunction.returns({ ...updateVector, velocity: 0 });
+                        updateFunction.mockReturnValue({ ...updateVector, velocity: 0 });
                     }
                 });
 
@@ -210,7 +209,7 @@ describe('setTimingsrcWithCustomUpdateFunction()', () => {
                 it('should call on to subscribe to the change event of the given timingObject', () => {
                     setTimingsrcWithCustomUpdateFunction(...args);
 
-                    expect(on).to.have.been.calledOnce.and.calledWithExactly(timingObject, 'change');
+                    expect(on).to.have.been.calledOnce.and.calledWith(timingObject, 'change');
                 });
 
                 it('should call the function returned by on', () => {
@@ -218,8 +217,8 @@ describe('setTimingsrcWithCustomUpdateFunction()', () => {
 
                     expect(subscribeToOn).to.have.been.calledOnce;
 
-                    expect(subscribeToOn.firstCall.args.length).to.equal(1);
-                    expect(subscribeToOn.firstCall.args[0]).to.be.a('function');
+                    expect(subscribeToOn.mock.calls[0].length).to.equal(1);
+                    expect(subscribeToOn.mock.calls[0][0]).to.be.a('function');
                 });
 
                 it('should return a function that calls the function returned by the function returned by on', () => {
@@ -229,7 +228,7 @@ describe('setTimingsrcWithCustomUpdateFunction()', () => {
 
                     unsubscribe();
 
-                    expect(unsubscribeFromOn).to.have.been.calledOnce.and.calledWithExactly();
+                    expect(unsubscribeFromOn).to.have.been.calledOnce.and.calledWith();
                 });
 
                 describe('on a new change event', () => {
@@ -241,7 +240,7 @@ describe('setTimingsrcWithCustomUpdateFunction()', () => {
                         nextPreparedUpdateVector = { position: 'another prepated position', velocity: 'another prepated veloctiy' };
                         nextUpdateVector = { position: 'another fake position', velocity: 'another fake veloctiy' };
 
-                        subscribeToOn.callsFake((value) => {
+                        subscribeToOn.mockImplementation((value) => {
                             next = value;
 
                             return unsubscribeFromOn;
@@ -249,27 +248,27 @@ describe('setTimingsrcWithCustomUpdateFunction()', () => {
 
                         setTimingsrcWithCustomUpdateFunction(...args);
 
-                        prepareTimingStateVector.resetHistory();
-                        prepareUpdateVector.resetHistory();
-                        timingObject.query.resetHistory();
-                        updateFunction.resetHistory();
-                        updateMediaElement.resetHistory();
+                        prepareTimingStateVector.mockClear();
+                        prepareUpdateVector.mockClear();
+                        timingObject.query.mockClear();
+                        updateFunction.mockClear();
+                        updateMediaElement.mockClear();
 
-                        prepareUpdateVector.returns(nextPreparedUpdateVector);
-                        updateFunction.returns(nextUpdateVector);
+                        prepareUpdateVector.mockReturnValue(nextPreparedUpdateVector);
+                        updateFunction.mockReturnValue(nextUpdateVector);
                     });
 
                     it('should call query() on the given timingObject', () => {
                         next();
 
-                        expect(timingObject.query).to.have.been.calledOnce.and.calledWithExactly();
+                        expect(timingObject.query).to.have.been.calledOnce.and.calledWith();
                     });
 
                     if (withPrepareTimingStateVectorFunction) {
                         it('should call prepareTimingStateVector()', () => {
                             next();
 
-                            expect(prepareTimingStateVector).to.have.been.calledOnce.and.calledWithExactly(timingStateVector);
+                            expect(prepareTimingStateVector).to.have.been.calledOnce.and.calledWith(timingStateVector);
                         });
                     } else {
                         it('should not call prepareTimingStateVector()', () => {
@@ -282,7 +281,7 @@ describe('setTimingsrcWithCustomUpdateFunction()', () => {
                     it('should call updateFunction()', () => {
                         next();
 
-                        expect(updateFunction).to.have.been.calledOnce.and.calledWithExactly(
+                        expect(updateFunction).to.have.been.calledOnce.and.calledWith(
                             withPrepareTimingStateVectorFunction ? preparedTimingStateVector : timingStateVector,
                             mediaElement.currentTime,
                             { ...(withPrepareUpdateVectorFunction ? preparedUpdateVector : updateVector), velocity: 0 }
@@ -293,7 +292,7 @@ describe('setTimingsrcWithCustomUpdateFunction()', () => {
                         next();
                         next();
 
-                        expect(updateFunction).to.have.been.calledTwice.and.calledWithExactly(
+                        expect(updateFunction).to.have.been.calledTwice.and.calledWith(
                             withPrepareTimingStateVectorFunction ? preparedTimingStateVector : timingStateVector,
                             mediaElement.currentTime,
                             withPrepareUpdateVectorFunction ? nextPreparedUpdateVector : nextUpdateVector
@@ -304,7 +303,7 @@ describe('setTimingsrcWithCustomUpdateFunction()', () => {
                         it('should call prepareUpdateVector()', () => {
                             next();
 
-                            expect(prepareUpdateVector).to.have.been.calledOnce.and.calledWithExactly(nextUpdateVector);
+                            expect(prepareUpdateVector).to.have.been.calledOnce.and.calledWith(nextUpdateVector);
                         });
                     } else {
                         it('should not call prepareUpdateVector()', () => {
@@ -318,7 +317,7 @@ describe('setTimingsrcWithCustomUpdateFunction()', () => {
                         it('should call updateMediaElement()', () => {
                             next();
 
-                            expect(updateMediaElement).to.have.been.calledOnce.and.calledWithExactly(
+                            expect(updateMediaElement).to.have.been.calledOnce.and.calledWith(
                                 mediaElement.currentTime,
                                 0,
                                 mediaElement,
@@ -337,7 +336,7 @@ describe('setTimingsrcWithCustomUpdateFunction()', () => {
                         it('should call updateMediaElement()', () => {
                             next();
 
-                            expect(updateMediaElement).to.have.been.calledOnce.and.calledWithExactly(
+                            expect(updateMediaElement).to.have.been.calledOnce.and.calledWith(
                                 mediaElement.currentTime,
                                 0,
                                 mediaElement,
@@ -356,7 +355,7 @@ describe('setTimingsrcWithCustomUpdateFunction()', () => {
                         it('should call updateMediaElement()', () => {
                             next();
 
-                            expect(updateMediaElement).to.have.been.calledOnce.and.calledWithExactly(
+                            expect(updateMediaElement).to.have.been.calledOnce.and.calledWith(
                                 mediaElement.currentTime,
                                 18,
                                 mediaElement,
@@ -375,15 +374,15 @@ describe('setTimingsrcWithCustomUpdateFunction()', () => {
 
                     expect(setInterval).to.have.been.calledOnce;
 
-                    expect(setInterval.firstCall.args.length).to.equal(2);
-                    expect(setInterval.firstCall.args[0]).to.be.a('function');
-                    expect(setInterval.firstCall.args[1]).to.equal(100);
+                    expect(setInterval.mock.calls[0].length).to.equal(2);
+                    expect(setInterval.mock.calls[0][0]).to.be.a('function');
+                    expect(setInterval.mock.calls[0][1]).to.equal(100);
                 });
 
                 it('should call animationFrame without any arguments', () => {
                     setTimingsrcWithCustomUpdateFunction(...args);
 
-                    expect(animationFrame).to.have.been.calledOnce.and.calledWithExactly();
+                    expect(animationFrame).to.have.been.calledOnce.and.calledWith();
                 });
 
                 it('should call the function returned by animationFrame', () => {
@@ -391,14 +390,14 @@ describe('setTimingsrcWithCustomUpdateFunction()', () => {
 
                     expect(subscribeToAnimationFrame).to.have.been.calledOnce;
 
-                    expect(subscribeToAnimationFrame.firstCall.args.length).to.equal(1);
-                    expect(subscribeToAnimationFrame.firstCall.args[0]).to.be.a('function');
+                    expect(subscribeToAnimationFrame.mock.calls[0].length).to.equal(1);
+                    expect(subscribeToAnimationFrame.mock.calls[0][0]).to.be.a('function');
                 });
 
                 it('should call on to subscribe to the change event of the given timingObject', () => {
                     setTimingsrcWithCustomUpdateFunction(...args);
 
-                    expect(on).to.have.been.calledOnce.and.calledWithExactly(timingObject, 'change');
+                    expect(on).to.have.been.calledOnce.and.calledWith(timingObject, 'change');
                 });
 
                 it('should call the function returned by on', () => {
@@ -406,8 +405,8 @@ describe('setTimingsrcWithCustomUpdateFunction()', () => {
 
                     expect(subscribeToOn).to.have.been.calledOnce;
 
-                    expect(subscribeToOn.firstCall.args.length).to.equal(1);
-                    expect(subscribeToOn.firstCall.args[0]).to.be.a('function');
+                    expect(subscribeToOn.mock.calls[0].length).to.equal(1);
+                    expect(subscribeToOn.mock.calls[0][0]).to.be.a('function');
                 });
 
                 it('should return a function that calls clearInterval', () => {
@@ -417,7 +416,7 @@ describe('setTimingsrcWithCustomUpdateFunction()', () => {
 
                     unsubscribe();
 
-                    expect(clearInterval).to.have.been.calledOnce.and.calledWithExactly(intervalId);
+                    expect(clearInterval).to.have.been.calledOnce.and.calledWith(intervalId);
                 });
 
                 it('should return a function that calls the function returned by the function returned by animationFrame', () => {
@@ -427,7 +426,7 @@ describe('setTimingsrcWithCustomUpdateFunction()', () => {
 
                     unsubscribe();
 
-                    expect(unsubscribeFromAnimationFrame).to.have.been.calledOnce.and.calledWithExactly();
+                    expect(unsubscribeFromAnimationFrame).to.have.been.calledOnce.and.calledWith();
                 });
 
                 it('should return a function that calls the function returned by the function returned by on', () => {
@@ -437,7 +436,7 @@ describe('setTimingsrcWithCustomUpdateFunction()', () => {
 
                     unsubscribe();
 
-                    expect(unsubscribeFromOn).to.have.been.calledOnce.and.calledWithExactly();
+                    expect(unsubscribeFromOn).to.have.been.calledOnce.and.calledWith();
                 });
 
                 for (const event of ['animationFrame', 'change event', 'interval']) {
@@ -455,7 +454,7 @@ describe('setTimingsrcWithCustomUpdateFunction()', () => {
                                 : event === 'change event'
                                   ? subscribeToOn
                                   : setInterval
-                            ).callsFake((value) => {
+                            ).mockImplementation((value) => {
                                 next = value;
 
                                 return event === 'animationFrame'
@@ -467,15 +466,15 @@ describe('setTimingsrcWithCustomUpdateFunction()', () => {
 
                             setTimingsrcWithCustomUpdateFunction(...args);
 
-                            prepareTimingStateVector.resetHistory();
-                            prepareUpdateVector.resetHistory();
-                            setInterval.resetHistory();
-                            timingObject.query.resetHistory();
-                            updateFunction.resetHistory();
-                            updateMediaElement.resetHistory();
+                            prepareTimingStateVector.mockClear();
+                            prepareUpdateVector.mockClear();
+                            setInterval.mockClear();
+                            timingObject.query.mockClear();
+                            updateFunction.mockClear();
+                            updateMediaElement.mockClear();
 
-                            prepareUpdateVector.returns(nextPreparedUpdateVector);
-                            updateFunction.returns(nextUpdateVector);
+                            prepareUpdateVector.mockReturnValue(nextPreparedUpdateVector);
+                            updateFunction.mockReturnValue(nextUpdateVector);
                         });
 
                         if (event === 'interval') {
@@ -488,7 +487,7 @@ describe('setTimingsrcWithCustomUpdateFunction()', () => {
                             it('should call clearInterval', () => {
                                 next();
 
-                                expect(clearInterval).to.have.been.calledOnce.and.calledWithExactly(intervalId);
+                                expect(clearInterval).to.have.been.calledOnce.and.calledWith(intervalId);
                             });
                         }
 
@@ -504,23 +503,23 @@ describe('setTimingsrcWithCustomUpdateFunction()', () => {
 
                                 expect(setInterval).to.have.been.calledOnce;
 
-                                expect(setInterval.firstCall.args.length).to.equal(2);
-                                expect(setInterval.firstCall.args[0]).to.be.a('function');
-                                expect(setInterval.firstCall.args[1]).to.equal(100);
+                                expect(setInterval.mock.calls[0].length).to.equal(2);
+                                expect(setInterval.mock.calls[0][0]).to.be.a('function');
+                                expect(setInterval.mock.calls[0][1]).to.equal(100);
                             });
                         }
 
                         it('should call query() on the given timingObject', () => {
                             next();
 
-                            expect(timingObject.query).to.have.been.calledOnce.and.calledWithExactly();
+                            expect(timingObject.query).to.have.been.calledOnce.and.calledWith();
                         });
 
                         if (withPrepareTimingStateVectorFunction) {
                             it('should call prepareTimingStateVector()', () => {
                                 next();
 
-                                expect(prepareTimingStateVector).to.have.been.calledOnce.and.calledWithExactly(timingStateVector);
+                                expect(prepareTimingStateVector).to.have.been.calledOnce.and.calledWith(timingStateVector);
                             });
                         } else {
                             it('should not call prepareTimingStateVector()', () => {
@@ -533,7 +532,7 @@ describe('setTimingsrcWithCustomUpdateFunction()', () => {
                         it('should call updateFunction()', () => {
                             next();
 
-                            expect(updateFunction).to.have.been.calledOnce.and.calledWithExactly(
+                            expect(updateFunction).to.have.been.calledOnce.and.calledWith(
                                 withPrepareTimingStateVectorFunction ? preparedTimingStateVector : timingStateVector,
                                 mediaElement.currentTime,
                                 withPrepareUpdateVectorFunction ? preparedUpdateVector : updateVector
@@ -544,7 +543,7 @@ describe('setTimingsrcWithCustomUpdateFunction()', () => {
                             next();
                             next();
 
-                            expect(updateFunction).to.have.been.calledTwice.and.calledWithExactly(
+                            expect(updateFunction).to.have.been.calledTwice.and.calledWith(
                                 withPrepareTimingStateVectorFunction ? preparedTimingStateVector : timingStateVector,
                                 mediaElement.currentTime,
                                 withPrepareUpdateVectorFunction ? nextPreparedUpdateVector : nextUpdateVector
@@ -555,7 +554,7 @@ describe('setTimingsrcWithCustomUpdateFunction()', () => {
                             it('should call prepareUpdateVector()', () => {
                                 next();
 
-                                expect(prepareUpdateVector).to.have.been.calledOnce.and.calledWithExactly(nextUpdateVector);
+                                expect(prepareUpdateVector).to.have.been.calledOnce.and.calledWith(nextUpdateVector);
                             });
                         } else {
                             it('should not call prepareUpdateVector()', () => {
@@ -569,7 +568,7 @@ describe('setTimingsrcWithCustomUpdateFunction()', () => {
                             it('should call updateMediaElement()', () => {
                                 next();
 
-                                expect(updateMediaElement).to.have.been.calledOnce.and.calledWithExactly(
+                                expect(updateMediaElement).to.have.been.calledOnce.and.calledWith(
                                     mediaElement.currentTime,
                                     0,
                                     mediaElement,
@@ -588,7 +587,7 @@ describe('setTimingsrcWithCustomUpdateFunction()', () => {
                             it('should call updateMediaElement()', () => {
                                 next();
 
-                                expect(updateMediaElement).to.have.been.calledOnce.and.calledWithExactly(
+                                expect(updateMediaElement).to.have.been.calledOnce.and.calledWith(
                                     mediaElement.currentTime,
                                     0,
                                     mediaElement,
@@ -607,7 +606,7 @@ describe('setTimingsrcWithCustomUpdateFunction()', () => {
                             it('should call updateMediaElement()', () => {
                                 next();
 
-                                expect(updateMediaElement).to.have.been.calledOnce.and.calledWithExactly(
+                                expect(updateMediaElement).to.have.been.calledOnce.and.calledWith(
                                     mediaElement.currentTime,
                                     18,
                                     mediaElement,
