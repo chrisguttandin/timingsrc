@@ -30,7 +30,6 @@ export const recordSamples = (playbackRate, playedSamples, sampleRate) =>
         mediaStream.onaddtrack = () => {
             mediaStream.onaddtrack = null;
 
-            // eslint-disable-next-line no-undef
             const trackProcessor = new MediaStreamTrackProcessor({
                 track: mediaStream.getAudioTracks()[0]
             });
